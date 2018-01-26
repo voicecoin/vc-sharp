@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile></DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="App_Data\Logs\**" />
+    <Content Remove="App_Data\Logs\**" />
+    <EmbeddedResource Remove="App_Data\Logs\**" />
+    <None Remove="App_Data\Logs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="App_Data\Voicecoin.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="1.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="1.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ContentFoundation\ContentFoundation.RestApi\ContentFoundation.RestApi.csproj" />
+    <ProjectReference Include="..\..\..\Quickflow\Quickflow.ActivityRepository\Quickflow.ActivityRepository.csproj" />
+    <ProjectReference Include="..\Voicecoin.RestApi\Voicecoin.RestApi.csproj" />
+  </ItemGroup>
+
+</Project>

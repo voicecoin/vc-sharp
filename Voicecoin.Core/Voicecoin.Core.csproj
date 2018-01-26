@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp2.0\Voicecoin.Core.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BlockchainAPI" Version="4.0.0" />
+    <PackageReference Include="Coinbase.NetSDK" Version="1.2.0" />
+    <PackageReference Include="DotNetToolkit" Version="1.2.0" />
+    <PackageReference Include="EntityFrameworkCore.BootKit" Version="1.4.2" />
+    <PackageReference Include="Etherscan.NetSDK" Version="0.1.0" />
+    <PackageReference Include="Quartz" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ContentFoundation\ContentFoundation.Core\ContentFoundation.Core.csproj" />
+    <ProjectReference Include="..\..\..\CustomEntityFoundation\CustomEntityFoundation\CustomEntityFoundation.Core.csproj" />
+  </ItemGroup>
+
+</Project>

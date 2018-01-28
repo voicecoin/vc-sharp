@@ -10,7 +10,7 @@ namespace Voicecoin.Core.Tables
     /// <summary>
     /// Receive money address
     /// </summary>
-    public class ContributorAddress : DbRecord, IDbRecord
+    public class ContributorCurrencyAddress : DbRecord, IDbRecord
     {
         [StringLength(36)]
         public String UserId { get; set; }

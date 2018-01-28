@@ -13,14 +13,44 @@ using Voicecoin.Core.Tables;
 
 namespace Voicecoin.RestApi
 {
-    [Route("v1/[controller]")]
+    /// <summary>
+    /// ICO releated information
+    /// </summary>
     public class IcoInfoController : CoreController
     {
+        /// <summary>
+        /// ICO summary
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        public IcoStatModel GetInfo()
+        public Object GetInfo()
         {
-            return new IcoCore(dc).GetIcoStat();
+            var ico = new IcoCore(dc).GetIcoStat();
+
+            return new 
+            {
+                Sold = (ico.TotalSupply - ico.AvailableSupply).ToString("N0"),
+                Available = ico.AvailableSupply.ToString("N0"),
+                Total = ico.TotalSupply.ToString("N0"),
+                Percent = (ico.TotalSupply - ico.AvailableSupply) / ico.TotalSupply * 100 + "%",
+                StartDate = ico.StartDate
+            };
+        }
+
+        /// <summary>
+        /// Get supported currency types
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("currencies")]
+        public List<Object> GetSupportedCurrencies()
+        {
+            return new List<Object>
+            {
+                new { Symbol = CurrencyType.BTC, Name = "Bitcoin" },
+                new { Symbol = CurrencyType.ETH, Name = "Ethereum" }
+            };
         }
 
         [HttpGet("ContributionStat")]
@@ -28,7 +58,7 @@ namespace Voicecoin.RestApi
         {
             string userId = GetCurrentUser().Id;
             var contribution = new Contribution(GetCurrentUser().Id, dc, Database.Configuration);
-            var addresses = dc.Table<ContributorAddress>().Where(x => x.UserId == userId).ToList();
+            var addresses = dc.Table<ContributorCurrencyAddress>().Where(x => x.UserId == userId).ToList();
 
             var pairs = new MarketCore(dc).GetPrices();
 
@@ -66,7 +96,7 @@ namespace Voicecoin.RestApi
         {
             string userId = GetCurrentUser().Id;
             var contribution = new Contribution(GetCurrentUser().Id, dc, Database.Configuration);
-            var addresses = dc.Table<ContributorAddress>().Where(x => x.UserId == userId).ToList();
+            var addresses = dc.Table<ContributorCurrencyAddress>().Where(x => x.UserId == userId).ToList();
 
             var pairs = new MarketCore(dc).GetPrices();
 

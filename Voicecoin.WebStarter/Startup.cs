@@ -54,9 +54,6 @@ namespace Voicecoin.WebStarter
 
                 var filePath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "Voicecoin.RestApi.xml");
                 c.IncludeXmlComments(filePath);
-
-                filePath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "ContentFoundation.RestApi.xml");
-                c.IncludeXmlComments(filePath);
             });
 
         }
@@ -87,10 +84,10 @@ namespace Voicecoin.WebStarter
             app.UseAuthentication();
             app.UseMvc();
 
-            app.UseEntityDbContext(Configuration, env.ContentRootPath, new String[] { "CustomEntityFoundation.Core", "Quickflow.Core", "Quickflow.ActivityRepository", "ContentFoundation.Core", "Voicecoin.Core" });
+            app.UseEntityDbContext(Configuration, env.ContentRootPath, new String[] { "Voicecoin.Core" });
             app.UseInitLoader();
 
-            new AccountReceivableStatusJob().Execute(null);
+            //new AccountReceivableStatusJob().Execute(null);
         }
 
     }

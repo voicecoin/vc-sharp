@@ -1,7 +1,6 @@
 ﻿using Coinbase;
 using Coinbase.Models;
 using Coinbase.Wallet;
-using ContentFoundation.Core;
 using EntityFrameworkCore.BootKit;
 using Etherscan.NetSDK;
 using Info.Blockchain.API.BlockExplorer;
@@ -29,7 +28,7 @@ namespace Voicecoin.Core
 
         private void UpdateContributionAmount4ETH()
         {
-            var addresses = dc.Table<ContributorAddress>()
+            var addresses = dc.Table<ContributorCurrencyAddress>()
                 .Where(x => x.Currency == CurrencyType.ETH)
                 .OrderByDescending(x => x.UpdatedTime)
                 .Select(x => x.Address)
@@ -41,7 +40,7 @@ namespace Voicecoin.Core
 
             dc.DbTran(() => {
 
-                var conAddrs = dc.Table<ContributorAddress>().Where(x => addresses.Contains(x.Address)).ToList();
+                var conAddrs = dc.Table<ContributorCurrencyAddress>().Where(x => addresses.Contains(x.Address)).ToList();
 
                 conAddrs.ForEach(conAddr => {
                     conAddr.Amount = transactions.Where(x => x.To.ToLower() == conAddr.Address.ToLower()).Sum(x => x.Amount);
@@ -53,7 +52,7 @@ namespace Voicecoin.Core
 
         private void UpdateContributionAmount4BTC()
         {
-            var addresses = dc.Table<ContributorAddress>()
+            var addresses = dc.Table<ContributorCurrencyAddress>()
                 .Where(x => x.Currency == CurrencyType.BTC)
                 .OrderByDescending(x => x.UpdatedTime)
                 .Select(x => x.Address)
@@ -63,7 +62,7 @@ namespace Voicecoin.Core
             dc.DbTran(() => {
 
                 addresses.ForEach(conAddr => {
-                    var addr = dc.Table<ContributorAddress>().First(x => x.Address == conAddr);
+                    var addr = dc.Table<ContributorCurrencyAddress>().First(x => x.Address == conAddr);
                     var received = BitcoinHelper.GetReceivedValueByAddress(conAddr);
                     addr.Amount = received.Amount;
                     addr.UpdatedTime = DateTime.UtcNow;

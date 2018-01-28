@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ContentFoundation\ContentFoundation.RestApi\ContentFoundation.RestApi.csproj" />
     <ProjectReference Include="..\Voicecoin.Core\Voicecoin.Core.csproj" />
   </ItemGroup>
 

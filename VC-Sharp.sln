@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voicecoin.Core", "Voicecoin.Core\Voicecoin.Core.csproj", "{F386F072-BF93-46D7-AF3E-7277589746B7}"
 EndProject
@@ -9,15 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voicecoin.RestApi", "Voicec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voicecoin.WebStarter", "Voicecoin.WebStarter\Voicecoin.WebStarter.csproj", "{E823CEB9-2E86-43CF-854D-3454A1737E92}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContentFoundation.Core", "..\..\ContentFoundation\ContentFoundation.Core\ContentFoundation.Core.csproj", "{848C2F7F-B4EF-4011-80D3-CA222B3974AB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContentFoundation.RestApi", "..\..\ContentFoundation\ContentFoundation.RestApi\ContentFoundation.RestApi.csproj", "{F940D0D8-08D1-4B05-BC89-B64A02FE87AA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quickflow.Core", "..\..\Quickflow\Quickflow.Core\Quickflow.Core.csproj", "{AB70152D-B0A6-439B-89D7-3886D8B0D53F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quickflow.ActivityRepository", "..\..\Quickflow\Quickflow.ActivityRepository\Quickflow.ActivityRepository.csproj", "{B91429D1-6545-457F-AB22-1971486EACAE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomEntityFoundation.Core", "..\..\CustomEntityFoundation\CustomEntityFoundation\CustomEntityFoundation.Core.csproj", "{5A7D6492-D47D-435C-8E0D-3FE5FB5DD2D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetToolkit", "..\..\DotNetToolkit\DotNetToolkit\DotNetToolkit.csproj", "{9C4152AD-5935-42AE-B5B0-336710F684FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,26 +29,10 @@ Global
 		{E823CEB9-2E86-43CF-854D-3454A1737E92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E823CEB9-2E86-43CF-854D-3454A1737E92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E823CEB9-2E86-43CF-854D-3454A1737E92}.Release|Any CPU.Build.0 = Release|Any CPU
-		{848C2F7F-B4EF-4011-80D3-CA222B3974AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{848C2F7F-B4EF-4011-80D3-CA222B3974AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{848C2F7F-B4EF-4011-80D3-CA222B3974AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{848C2F7F-B4EF-4011-80D3-CA222B3974AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F940D0D8-08D1-4B05-BC89-B64A02FE87AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F940D0D8-08D1-4B05-BC89-B64A02FE87AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F940D0D8-08D1-4B05-BC89-B64A02FE87AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F940D0D8-08D1-4B05-BC89-B64A02FE87AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB70152D-B0A6-439B-89D7-3886D8B0D53F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB70152D-B0A6-439B-89D7-3886D8B0D53F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB70152D-B0A6-439B-89D7-3886D8B0D53F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB70152D-B0A6-439B-89D7-3886D8B0D53F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B91429D1-6545-457F-AB22-1971486EACAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B91429D1-6545-457F-AB22-1971486EACAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B91429D1-6545-457F-AB22-1971486EACAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B91429D1-6545-457F-AB22-1971486EACAE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5A7D6492-D47D-435C-8E0D-3FE5FB5DD2D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A7D6492-D47D-435C-8E0D-3FE5FB5DD2D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A7D6492-D47D-435C-8E0D-3FE5FB5DD2D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A7D6492-D47D-435C-8E0D-3FE5FB5DD2D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C4152AD-5935-42AE-B5B0-336710F684FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C4152AD-5935-42AE-B5B0-336710F684FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C4152AD-5935-42AE-B5B0-336710F684FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C4152AD-5935-42AE-B5B0-336710F684FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

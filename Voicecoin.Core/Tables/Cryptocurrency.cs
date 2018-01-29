@@ -1,4 +1,5 @@
-﻿using EntityFrameworkCore.BootKit;
+﻿using Coinbase.Models;
+using EntityFrameworkCore.BootKit;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +12,7 @@ namespace Voicecoin.Core.Tables
     {
         [Required]
         [MaxLength(16)]
-        public String Symbol { get; set; }
+        public CurrencyType Symbol { get; set; }
 
         [Required]
         [MaxLength(64)]

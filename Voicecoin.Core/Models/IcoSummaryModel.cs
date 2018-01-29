@@ -20,16 +20,9 @@ namespace Voicecoin.Core.Models
         /// </summary>
         public decimal AvailableSupply { get; set; }
 
-        public String Symbol { get; set; }
+        public CurrencyType Symbol { get; set; }
 
         public BalanceModel Price { get; set; }
-
-        public decimal Amount { get; set; }
-
-        /// <summary>
-        /// Base currency
-        /// </summary>
-        public String Base { get; set; }
 
         /// <summary>
         /// Sold

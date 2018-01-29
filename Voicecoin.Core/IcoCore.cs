@@ -28,8 +28,7 @@ namespace Voicecoin.Core
                            AvailableSupply = currency.AvailableSupply,
                            Symbol = currency.Symbol,
                            StartDate = stage.StartDate,
-                           Base = stage.Base,
-                           Amount = stage.Amount
+                           Price = new BalanceModel { Amount = stage.Amount, Currency = stage.Currency }
                        }).First();
 
             return ico;

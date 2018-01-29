@@ -18,9 +18,26 @@ namespace Voicecoin.RestApi
     {
         [AllowAnonymous]
         [HttpGet("prices")]
-        public List<PricePairModel> GetPricePairs()
+        public List<Object> GetPricePairs()
         {
-            return new MarketCore(dc).GetPrices();
+            var pairs = new MarketCore(dc).GetPrices();
+
+            var result = new List<Object>();
+            result.Add(new
+            {
+                Name = CurrencyType.BTC,
+                V2c = pairs.First(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.BTC).Amount,
+                C2v = pairs.First(x => x.Base == CurrencyType.BTC && x.Currency == CurrencyType.VC).Amount
+            });
+
+            result.Add(new
+            {
+                Name = CurrencyType.ETH,
+                V2c = pairs.First(x => x.Base == CurrencyType.ETH && x.Currency == CurrencyType.VC).Amount,
+                C2v = pairs.First(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.ETH).Amount
+            });
+
+            return result;
         }
     }
 }

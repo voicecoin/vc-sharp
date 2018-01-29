@@ -13,6 +13,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.PlatformAbstractions;
 using System.IO;
 using Voicecoin.Core;
+using DotNetToolkit.JwtHelper;
 
 namespace Voicecoin.WebStarter
 {

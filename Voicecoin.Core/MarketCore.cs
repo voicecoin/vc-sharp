@@ -26,54 +26,72 @@ namespace Voicecoin.Core
             var coinbase = new Client("", "");
 
             var ethUsd = coinbase.GetBuyPrice("ETH-USD");
-            var btcUsd = coinbase.GetBuyPrice("BTC-USD");
-            //var ethVc = info.Amount > 0 ? Math.Round(1 / info.Amount, 2) : 0;
+            ethUsd.Pair = "ETH-USD";
 
-            var pricePairs = new List<PricePairModel>
+            var btcUsd = coinbase.GetBuyPrice("BTC-USD");
+            btcUsd.Pair = "BTC-USD";
+
+            var vcUsd = new PricePairModel
             {
-                // ETH-VC
-                // new PricePairModel { Pair = $"{info.Symbol}-{info.Symbol}", Base = CurrencyType.ETH, Currency = CurrencyType.VC, Amount = ethVc },
-                // BTC-VC
-                // new PricePairModel { Pair = $"BTC-{info.Symbol}", Base = CurrencyType.BTC, Currency = CurrencyType.VC, Amount = btcUsd.Amount / ethUsd.Amount * ethVc},
-                new PricePairModel { Pair = $"{ethUsd.Base}-{ethUsd.Currency}", Base = CurrencyType.ETH, Currency = CurrencyType.USD, Amount = ethUsd.Amount },
-                new PricePairModel { Pair = $"{btcUsd.Base}-{ethUsd.Currency}", Base = CurrencyType.BTC, Currency = CurrencyType.USD, Amount = btcUsd.Amount }
+                Base = ico.Symbol,
+                Amount = ico.Price.Amount,
+                Currency = ico.Price.Currency,
+                Pair = $"{ico.Symbol}-{ico.Price.Currency}"
             };
 
-            // BASE UNIT - VC
-            pricePairs.Add(new PricePairModel
-            {
-                Base = Enum.Parse<CurrencyType>(ico.Base),
-                Currency = Enum.Parse<CurrencyType>(ico.Symbol),
-                Amount = ico.Amount,
-                Pair = $"{ico.Base}-{ico.Symbol}"
-            });
+            var pricePairs = new List<PricePairModel>();
 
             // VC - BASE UNIT
             pricePairs.Add(new PricePairModel
             {
-                Base = Enum.Parse<CurrencyType>(ico.Symbol),
-                Currency = Enum.Parse<CurrencyType>(ico.Base),
-                Amount = 1 / ico.Amount,
-                Pair = $"{ico.Symbol}-{ico.Base}"
+                Base = ico.Symbol,
+                Currency = ico.Price.Currency,
+                Amount = ico.Price.Amount,
+                Pair = $"{ico.Symbol}-{ico.Price.Currency}"
             });
 
-            var vcUsd = pricePairs.First(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.USD).Amount;
+            // BASE UNIT - VC
+            pricePairs.Add(new PricePairModel
+            {
+                Base = ico.Price.Currency,
+                Currency = ico.Symbol,
+                Amount = 1 / ico.Price.Amount,
+                Pair = $"{ico.Price.Currency}-{ico.Symbol}"
+            });
+
+            // VC - BTC
+            pricePairs.Add(new PricePairModel
+            {
+                Base = ico.Symbol,
+                Currency = CurrencyType.BTC,
+                Amount = vcUsd.Amount / btcUsd.Amount,
+                Pair = $"{ico.Symbol}-{CurrencyType.BTC.ToString()}"
+            });
 
             // BTC - VC
             pricePairs.Add(new PricePairModel
             {
                 Base = CurrencyType.BTC,
-                Currency = Enum.Parse<CurrencyType>(ico.Symbol),
-                Amount = btcUsd.Amount / vcUsd,
+                Currency = ico.Symbol,
+                Amount = btcUsd.Amount / vcUsd.Amount,
                 Pair = $"{CurrencyType.BTC.ToString()}-{ico.Symbol}"
+            });
+
+            // VC - ETH
+            pricePairs.Add(new PricePairModel
+            {
+                Base = ico.Symbol,
+                Currency = CurrencyType.ETH,
+                Amount = vcUsd.Amount / ethUsd.Amount,
+                Pair = $"{ico.Symbol}-{CurrencyType.ETH.ToString()}"
             });
 
             // ETH - VC
             pricePairs.Add(new PricePairModel
             {
                 Base = CurrencyType.ETH,
-                Currency = Enum.Parse<CurrencyType>(ico.Symbol),
-                Amount = ethUsd.Amount / vcUsd,
+                Currency = ico.Symbol,
+                Amount = ethUsd.Amount / vcUsd.Amount,
                 Pair = $"{CurrencyType.ETH.ToString()}-{ico.Symbol}"
             });
 

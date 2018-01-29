@@ -7,8 +7,9 @@ using EntityFrameworkCore.BootKit;
 using DotNetToolkit;
 using Voicecoin.Core.Account;
 using Voicecoin.Core.Utility;
+using DotNetToolkit.JwtHelper;
 
-namespace Voicecoin.RestApi.Account
+namespace Voicecoin.RestApi
 {
     public class AccountController : CoreController
     {
@@ -36,7 +37,7 @@ namespace Voicecoin.RestApi.Account
                 string hash = PasswordHelper.Hash(password, user.Salt);
                 if(user.Password == hash)
                 {
-                    return Ok(JwtToken.GenerateToken(user));
+                    return Ok(JwtToken.GenerateToken(Database.Configuration, user.Id));
                 }
             }
 

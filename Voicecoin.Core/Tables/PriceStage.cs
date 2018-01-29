@@ -1,4 +1,5 @@
-﻿using EntityFrameworkCore.BootKit;
+﻿using Coinbase.Models;
+using EntityFrameworkCore.BootKit;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,9 +14,9 @@ namespace Voicecoin.Core.Tables
     public class PriceStage : DbRecord, IDbRecord
     {
         /// <summary>
-        /// base Currency
+        /// Target Currency
         /// </summary>
-        public String Base { get; set; }
+        public CurrencyType Currency { get; set; }
 
         /// <summary>
         /// 1 base = 10 Amount Symbol
@@ -23,11 +24,11 @@ namespace Voicecoin.Core.Tables
         public Decimal Amount { get; set; }
 
         /// <summary>
-        /// target currency
+        /// Base currency
         /// </summary>
         [Required]
         [MaxLength(8)]
-        public String Symbol { get; set; }
+        public CurrencyType Symbol { get; set; }
 
         /// <summary>
         /// Start date of the Status

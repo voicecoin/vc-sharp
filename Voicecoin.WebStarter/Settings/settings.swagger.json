@@ -1,0 +1,12 @@
+﻿{
+  "Swagger": {
+    "Version": "v1",
+    "Title": "Voicecoin API",
+    "Description": "Voicecoin API",
+    "TermsOfService": "MIT",
+    "Contact": {
+      "Name": "Voicecoin",
+      "Email": "support@voicecoin.com"
+    }
+  }
+}

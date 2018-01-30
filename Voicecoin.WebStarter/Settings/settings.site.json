@@ -1,0 +1,8 @@
+{
+  "SiteSetting": {
+    "title": "Voicecoin",
+    "slogan": "The future of web surfing",
+    "enableUserRegister": true,
+    "defaultPage": "/Dashboard"
+  }
+}

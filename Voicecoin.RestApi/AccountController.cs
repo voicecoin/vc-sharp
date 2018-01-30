@@ -22,26 +22,39 @@ namespace Voicecoin.RestApi
         [AllowAnonymous]
         [HttpPost("token")]
         [ProducesResponseType(typeof(String), 200)]
-        public IActionResult Token(string username, string password)
+        public IActionResult Token([FromBody] UserLoginViewModel userModel)
         {
-            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(userModel.UserName) || String.IsNullOrEmpty(userModel.Password))
             {
                 return new BadRequestObjectResult("Username and password should not be empty.");
             }
 
             // validate from local
-            var user = dc.Table<User>().FirstOrDefault(x => x.Name == username && x.IsActivated);
+            var user = dc.Table<User>().FirstOrDefault(x => x.UserName == userModel.UserName);
             if (user != null)
             {
-                // validate password
-                string hash = PasswordHelper.Hash(password, user.Salt);
-                if(user.Password == hash)
+                if (!user.IsActivated)
                 {
-                    return Ok(JwtToken.GenerateToken(Database.Configuration, user.Id));
+                    return BadRequest("Account hasn't been activated, please check your email to activate it.");
+                }
+                else
+                {
+                    // validate password
+                    string hash = PasswordHelper.Hash(userModel.Password, user.Salt);
+                    if (user.Password == hash)
+                    {
+                        return Ok(JwtToken.GenerateToken(Database.Configuration, user.Id));
+                    }
+                    else
+                    {
+                        return BadRequest("Authorization Failed.");
+                    }
                 }
             }
-
-            return new BadRequestObjectResult($"Authorization Failed.");
+            else
+            {
+                return BadRequest("Account doesn't exist");
+            }
         }
 
         /*[HttpGet("list")]
@@ -86,7 +99,7 @@ namespace Voicecoin.RestApi
         [Route("exist")]
         public Boolean UserExist([FromQuery] String userName)
         {
-            var user = dc.Table<User>().Any(x => x.Name == userName);
+            var user = dc.Table<User>().Any(x => x.UserName == userName);
 
             return user;
         }
@@ -142,14 +155,13 @@ namespace Voicecoin.RestApi
             {
                 Password = account.Password,
                 Email = account.Email,
-                Name = account.Email,
+                UserName = account.Email,
                 FirstName = account.FullName.Split(' ').First(),
                 LastName = account.FullName.Split(' ').Last()
             };
 
             dc.DbTran(async delegate {
                 var userCore = new AccountCore(dc, Database.Configuration);
-                userCore.Host = $"{Request.Scheme}://{Request.Host}";
                 await userCore.CreateUser(user);
             });
 

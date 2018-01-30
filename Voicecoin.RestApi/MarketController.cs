@@ -13,7 +13,6 @@ using Voicecoin.Core.Tables;
 
 namespace Voicecoin.RestApi
 {
-    [Route("v1/[controller]")]
     public class MarketController : CoreController
     {
         [AllowAnonymous]
@@ -33,8 +32,8 @@ namespace Voicecoin.RestApi
             result.Add(new
             {
                 Name = CurrencyType.ETH,
-                V2c = pairs.First(x => x.Base == CurrencyType.ETH && x.Currency == CurrencyType.VC).Amount,
-                C2v = pairs.First(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.ETH).Amount
+                V2c = pairs.First(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.ETH).Amount,
+                C2v = pairs.First(x => x.Base == CurrencyType.ETH && x.Currency == CurrencyType.VC).Amount
             });
 
             return result;

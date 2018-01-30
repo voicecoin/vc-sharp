@@ -18,7 +18,7 @@ namespace Voicecoin.Core.Account
         /// </summary>
         [Required]
         [MaxLength(64)]
-        public String Name { get; set; }
+        public String UserName { get; set; }
 
         [Required]
         [StringLength(128)]
@@ -67,6 +67,9 @@ namespace Voicecoin.Core.Account
 
         [ForeignKey("UserId")]
         public UserAddress Address { get; set; }
+
+        [StringLength(36)]
+        public String CouponId { get; set; }
 
         public User()
         {

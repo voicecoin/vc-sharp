@@ -1,10 +1,10 @@
 ﻿[
   {
-    "code": "10-PERCENT-OFF-AA",
+    "code": "3-CENTS",
     "description": "",
-    "percentageOff": 0.1,
-    "startDate": "2018-02-01",
-    "endDate": "2018-02-07",
-    "channel": "China Union"
+    "amount": 0.03,
+    "currency": "USD",
+    "startDate": "2018-01-01",
+    "endDate": "2018-02-14"
   }
 ]

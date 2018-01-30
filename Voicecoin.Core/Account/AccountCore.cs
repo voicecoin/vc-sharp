@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Voicecoin.Core.Permission;
 using Voicecoin.Core.Utility;
 
 namespace Voicecoin.Core.Account
@@ -16,7 +17,9 @@ namespace Voicecoin.Core.Account
         private IConfiguration config;
         private static RazorLightEngine engine;
 
-        public String Host { get; set; }
+        public const String SALES_ROLE_ID = "150a431c-86b5-4a22-acc4-207a4a08cc01";
+        public const String ADMIN_ROLE_ID = "9fb3536c-130c-48f4-93be-fd141ca8f29d";
+        public const String AUTH_ROLE_ID = "095bbb96-a103-458c-a79f-e6832dc547bf";
 
         public AccountCore(Database db, IConfiguration config)
         {
@@ -32,13 +35,19 @@ namespace Voicecoin.Core.Account
 
             dc.Table<User>().Add(user);
 
+            dc.Table<RoleOfUser>().Add(new RoleOfUser
+            {
+                RoleId = AUTH_ROLE_ID,
+                UserId = user.Id
+            });
+
             EmailRequestModel model = new EmailRequestModel();
 
-            model.Subject = Database.Configuration.GetSection("UserActivationEmail:Subject").Value;
+            model.Subject = config.GetSection("UserActivationEmail:Subject").Value;
             model.ToAddresses = user.Email;
-            model.Template = Database.Configuration.GetSection("UserActivationEmail:Template").Value;
-            model.Bcc = Database.Configuration.GetSection("UserActivationEmail:Bcc").Value;
-            model.Cc = Database.Configuration.GetSection("UserActivationEmail:Cc").Value;
+            model.Template = config.GetSection("UserActivationEmail:Template").Value;
+            model.Bcc = config.GetSection("UserActivationEmail:Bcc").Value;
+            model.Cc = config.GetSection("UserActivationEmail:Cc").Value;
 
             if (!String.IsNullOrEmpty(model.Template))
             {
@@ -52,7 +61,7 @@ namespace Voicecoin.Core.Account
 
                 var cacheResult = engine.TemplateCache.RetrieveTemplate(model.Template);
 
-                var emailModel = new { Host = Host, ActivationCode = user.ActivationCode };
+                var emailModel = new { Host = config.GetSection("clientHost").Value, ActivationCode = user.ActivationCode };
 
                 if (cacheResult.Success)
                 {
@@ -64,7 +73,7 @@ namespace Voicecoin.Core.Account
                 }
             }
 
-            var ses = new AwsSesHelper(Database.Configuration);
+            var ses = new AwsSesHelper(config);
             string emailId = await ses.Send(model, config);
 
             $"Created user {user.Email}, user id: {user.Id}, sent email: {emailId}.".Log(CfLogLevel.INFO);

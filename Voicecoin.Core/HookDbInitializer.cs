@@ -7,6 +7,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using EntityFrameworkCore.BootKit;
 using Voicecoin.Core.Tables;
+using Voicecoin.Core.Coupons;
 
 namespace Voicecoin.Core
 {
@@ -16,25 +17,39 @@ namespace Voicecoin.Core
 
         public void Load(IConfiguration config, Database dc)
         {
+            InitCurrency(config, dc);
+            InitPriceStage(config, dc);
+            InitCoupon(config, dc);
+            InitCommonDataCountry(config, dc);
+            InitCommonDataUsStates(config, dc);
+        }
+
+        private void InitCurrency(IConfiguration config, Database dc)
+        {
             if (dc.Table<Cryptocurrency>().Any()) return;
 
             string json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Voicecoin.Cryptocurrency.json");
             var cryptocurrency = JsonConvert.DeserializeObject<Cryptocurrency>(json);
             dc.Table<Cryptocurrency>().Add(cryptocurrency);
+        }
 
+        private void InitPriceStage(IConfiguration config, Database dc)
+        {
             if (dc.Table<PriceStage>().Any()) return;
 
-            json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Voicecoin.PriceStage.json");
+            string json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Voicecoin.PriceStage.json");
             var icoinfos = JsonConvert.DeserializeObject<List<PriceStage>>(json);
             dc.Table<PriceStage>().AddRange(icoinfos);
-
-            /*json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Voicecoin.Coupon.json");
-            var coupnons = JsonConvert.DeserializeObject<List<Coupon>>(json);
-            dc.Table<Coupon>().AddRange(coupnons);*/
-
-            InitCommonDataCountry(config, dc);
-            InitCommonDataUsStates(config, dc);
         }
+
+        private void InitCoupon(IConfiguration config, Database dc)
+        {
+            if (dc.Table<Coupon>().Any()) return;
+            string json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Voicecoin.Coupon.json");
+            var coupnons = JsonConvert.DeserializeObject<List<Coupon>>(json);
+            dc.Table<Coupon>().AddRange(coupnons);
+        }
+
 
         /// <summary>
         /// https://github.com/OpenBookPrices/country-data/tree/master/data

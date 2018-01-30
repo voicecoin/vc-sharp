@@ -43,16 +43,14 @@ namespace Voicecoin.RestApi
             {
                 return new User
                 {
-                    Id = this.User.Claims.FirstOrDefault(x => x.Type.Equals("UserId"))?.Value,
-                    Name = this.User.Claims.FirstOrDefault(x => x.Type.Equals("UserName"))?.Value
+                    Id = this.User.Claims.FirstOrDefault(x => x.Type.Equals("UserId"))?.Value
                 };
             }
             else
             {
                 return new User
                 {
-                    Id = Guid.Empty.ToString(),
-                    Name = "Anonymous"
+                    Id = Guid.Empty.ToString()
                 };
             }
         }

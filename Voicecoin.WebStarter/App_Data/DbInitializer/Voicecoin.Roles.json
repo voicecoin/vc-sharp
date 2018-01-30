@@ -1,12 +1,16 @@
 ﻿{
   "roles": [
     {
-      "id": "535284e7-89cd-470a-a81c-e4e26ddd65ff",
+      "id": "095bbb96-a103-458c-a79f-e6832dc547bf",
       "name": "Authenticated"
     },
     {
-      "id": "da55ec2f-da18-44c1-872b-62199b59cc57",
+      "id": "9fb3536c-130c-48f4-93be-fd141ca8f29d",
       "name": "Administrator"
+    },
+    {
+      "id": "150a431c-86b5-4a22-acc4-207a4a08cc01",
+      "name": "Sales"
     }
   ]
 }

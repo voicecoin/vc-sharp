@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Voicecoin.Core.Permission;
-using Voicecoin.Core.Utility;
 
 namespace Voicecoin.Core.Account
 {
@@ -77,6 +76,20 @@ namespace Voicecoin.Core.Account
             string emailId = await ses.Send(model, config);
 
             $"Created user {user.Email}, user id: {user.Id}, sent email: {emailId}.".Log(CfLogLevel.INFO);
+        }
+
+        public void RecoverPassword(string email)
+        {
+            var recovery = new PasswordRecovery
+            {
+                Email = email,
+                ExpiredDate = DateTime.UtcNow.AddDays(1),
+                SecurityCode = Guid.NewGuid().ToString("N")
+            };
+
+            dc.Table<PasswordRecovery>().Add(recovery);
+
+            // send a email
         }
     }
 }

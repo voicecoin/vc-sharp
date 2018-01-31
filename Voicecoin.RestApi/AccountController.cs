@@ -6,7 +6,6 @@ using System.Linq.Dynamic.Core;
 using EntityFrameworkCore.BootKit;
 using DotNetToolkit;
 using Voicecoin.Core.Account;
-using Voicecoin.Core.Utility;
 using DotNetToolkit.JwtHelper;
 
 namespace Voicecoin.RestApi
@@ -180,6 +179,27 @@ namespace Voicecoin.RestApi
             });
 
             return Ok("Signup approved!");
+        }
+
+        /// <summary>
+        /// Find back password
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        public IActionResult RecoverPassword([FromQuery] String email)
+        {
+            dc.DbTran(async delegate {
+                var userCore = new AccountCore(dc, Database.Configuration);
+                userCore.RecoverPassword(email);
+            });
+            return Ok("Please follow the instruction sent to your email to reset password.");
+        }
+
+        [AllowAnonymous]
+        public IActionResult ResetPassword([FromBody] ResetPasswordViewModel model)
+        {
+            return Ok("Please follow the instruction sent to your email to reset password.");
         }
     }
 }

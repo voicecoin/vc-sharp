@@ -1,0 +1,13 @@
+{
+  "TaxonomyId": "ee3ccd84-cff1-4701-8c61-9f9d88a6e03e",
+  "TaxonomyName": "Id Document Type",
+  "Terms": [
+    "Passport",
+    "Driver's License",
+    "National Identity Card",
+    "Non-Driver Photo ID Card",
+    "Armed Forces Identification",
+    "Alien Identification",
+    "Mexican Matricula"
+  ]
+}

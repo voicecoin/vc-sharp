@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Voicecoin.Core.Models;
 
-namespace Voicecoin.Core.Tables
+namespace Voicecoin.Core
 {
     public class Cryptocurrency : DbRecord, IDbRecord
     {

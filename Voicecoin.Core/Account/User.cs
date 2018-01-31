@@ -68,9 +68,6 @@ namespace Voicecoin.Core.Account
         [ForeignKey("UserId")]
         public UserAddress Address { get; set; }
 
-        [StringLength(36)]
-        public String CouponId { get; set; }
-
         public User()
         {
             SignupDate = DateTime.UtcNow;

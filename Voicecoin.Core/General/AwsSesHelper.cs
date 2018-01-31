@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Voicecoin.Core.Utility
+namespace Voicecoin.Core
 {
     public class AwsSesHelper
     {

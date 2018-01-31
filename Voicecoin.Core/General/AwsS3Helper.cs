@@ -9,7 +9,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Voicecoin.Core.Utility
+namespace Voicecoin.Core
 {
     public class AwsS3Helper
     {

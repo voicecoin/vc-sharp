@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Voicecoin.Core;
-using Voicecoin.Core.Tables;
 
 namespace Voicecoin.RestApi
 {

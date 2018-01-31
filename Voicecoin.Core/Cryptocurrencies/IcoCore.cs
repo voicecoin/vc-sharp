@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Voicecoin.Core.Tables;
 using System.Linq;
 using Voicecoin.Core.Models;
 using Coinbase.Models;

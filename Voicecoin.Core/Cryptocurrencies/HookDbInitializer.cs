@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using EntityFrameworkCore.BootKit;
-using Voicecoin.Core.Tables;
 using Voicecoin.Core.Coupons;
 
 namespace Voicecoin.Core

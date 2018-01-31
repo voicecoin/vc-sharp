@@ -3,16 +3,12 @@ using Coinbase.Models;
 using Coinbase.Wallet;
 using EntityFrameworkCore.BootKit;
 using Etherscan.NetSDK;
-using Info.Blockchain.API.BlockExplorer;
-using Info.Blockchain.API.Client;
 using Quartz;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Voicecoin.Core.Tables;
 
 namespace Voicecoin.Core
 {

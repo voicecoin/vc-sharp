@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using shortid;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Voicecoin.Core.Coupons
@@ -33,7 +34,16 @@ namespace Voicecoin.Core.Coupons
 
             string host = config.GetSection("clientHost").Value;
 
-            return $"{host}/register?coupon={refer.ReferCode}";
+            return $"{host}/invite/{refer.ReferCode}";
+        }
+
+        public List<Coupon> GetAvailableCoupons()
+        {
+            var coupons = dc.Table<Coupon>().Where(x => x.StartDate <= DateTime.UtcNow
+                && x.EndDate >= DateTime.UtcNow)
+                .Select(x => x);
+
+            return coupons.ToList();
         }
     }
 }

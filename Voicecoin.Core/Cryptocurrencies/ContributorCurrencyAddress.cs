@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Voicecoin.Core.Tables
+namespace Voicecoin.Core
 {
     /// <summary>
     /// Receive money address

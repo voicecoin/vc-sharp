@@ -14,5 +14,10 @@ namespace Voicecoin.Core.Account
 
         [Required]
         public String Password { get; set; }
+
+        /// <summary>
+        /// Invitation code
+        /// </summary>
+        public String InvitationCode { get; set; }
     }
 }

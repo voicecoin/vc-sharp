@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voicecoin.RestApi", "Voicec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voicecoin.WebStarter", "Voicecoin.WebStarter\Voicecoin.WebStarter.csproj", "{E823CEB9-2E86-43CF-854D-3454A1737E92}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetToolkit", "..\..\DotNetToolkit\DotNetToolkit\DotNetToolkit.csproj", "{9C4152AD-5935-42AE-B5B0-336710F684FB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{E823CEB9-2E86-43CF-854D-3454A1737E92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E823CEB9-2E86-43CF-854D-3454A1737E92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E823CEB9-2E86-43CF-854D-3454A1737E92}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C4152AD-5935-42AE-B5B0-336710F684FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C4152AD-5935-42AE-B5B0-336710F684FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C4152AD-5935-42AE-B5B0-336710F684FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C4152AD-5935-42AE-B5B0-336710F684FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

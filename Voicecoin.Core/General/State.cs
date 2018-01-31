@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Voicecoin.Core.Tables
+namespace Voicecoin.Core
 {
     public class State : DbRecord, IDbRecord
     {

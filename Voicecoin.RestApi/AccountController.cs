@@ -21,7 +21,7 @@ namespace Voicecoin.RestApi
         [AllowAnonymous]
         [HttpPost("token")]
         [ProducesResponseType(typeof(String), 200)]
-        public IActionResult Token([FromBody] UserLoginViewModel userModel)
+        public IActionResult Token([FromBody] VmUserLogin userModel)
         {
             if (String.IsNullOrEmpty(userModel.UserName) || String.IsNullOrEmpty(userModel.Password))
             {
@@ -82,10 +82,10 @@ namespace Voicecoin.RestApi
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public UserViewModel GetUser()
+        public VmUser GetUser()
         {
             var user = dc.Table<User>().Find(GetCurrentUser().Id);
-            return user.ToObject<UserViewModel>();
+            return user.ToObject<VmUser>();
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Voicecoin.RestApi
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult CreateUser([FromBody] UserCreateViewModel account)
+        public IActionResult CreateUser([FromBody] VmUserCreate account)
         {
             var existedUser = dc.Table<User>().FirstOrDefault(x => x.Email == account.Email);
 
@@ -187,6 +187,7 @@ namespace Voicecoin.RestApi
         /// <param name="email"></param>
         /// <returns></returns>
         [AllowAnonymous]
+        [HttpGet("RecoverPassword")]
         public IActionResult RecoverPassword([FromQuery] String email)
         {
             dc.DbTran(async delegate {
@@ -197,7 +198,8 @@ namespace Voicecoin.RestApi
         }
 
         [AllowAnonymous]
-        public IActionResult ResetPassword([FromBody] ResetPasswordViewModel model)
+        [HttpPost("ResetPassword")]
+        public IActionResult ResetPassword([FromBody] VmResetPassword model)
         {
             return Ok("Please follow the instruction sent to your email to reset password.");
         }

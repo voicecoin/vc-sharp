@@ -7,7 +7,7 @@ namespace Voicecoin.Core.Account
     /// <summary>
     /// Use either SecurityCode or OriginalPassword to reset password
     /// </summary>
-    public class ResetPasswordViewModel
+    public class VmResetPassword
     {
         public String Email { get; set; }
 

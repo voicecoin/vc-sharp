@@ -55,25 +55,72 @@ namespace Voicecoin.RestApi
             return result.LoadRecords(query);
         }
 
-        [HttpGet]
+        [HttpGet("PersonalInformation")]
         public VmPersonalInfomation GetPersonalInformation()
         {
-            return new VmPersonalInfomation { };
+            var personal = new UserPersonalCore(dc, GetCurrentUser().Id);
+            var user = personal.GetPersonalInfo();
+
+            return user.ToObject<VmPersonalInfomation>();
         }
 
-        [HttpPut]
-        public IActionResult UpdatePersonalInformation(VmPersonalInfomation vm)
+        [HttpPost("PersonalInformation")]
+        public IActionResult UploadPersonalInformation(VmPersonalInfomation vm)
         {
-            string userId = GetCurrentUser().Id;
+            var personal = new UserPersonalCore(dc, GetCurrentUser().Id);
+
+            dc.DbTran(() =>
+            {
+                personal.UpdatePersonalInfo(vm.ToObject<User>());
+            });
 
             return Ok();
         }
 
+        [HttpGet("Declarations")]
+        public VmUserDeclarations GetDeclarations()
+        {
+            var verify = new UserVerifyCore(dc, GetCurrentUser().Id);
+            var declares = verify.GetDeclarations();
+
+            return new VmUserDeclarations
+            {
+                Declaration1 = declares.First(x => x.Tag == TagConstants.UserDeclaration1).Declaration,
+                Declaration2 = declares.First(x => x.Tag == TagConstants.UserDeclaration2).Declaration,
+                Declaration3 = declares.First(x => x.Tag == TagConstants.UserDeclaration3).Declaration
+            };
+        }
+
+        [HttpPost("Declarations")]
+        public IActionResult UploadDeclarations(VmUserDeclarations declarations)
+        {
+            var verify = new UserVerifyCore(dc, GetCurrentUser().Id);
+
+            dc.DbTran(() => {
+                verify.UpdateDeclarations(TagConstants.UserDeclaration1, declarations.Declaration1);
+                verify.UpdateDeclarations(TagConstants.UserDeclaration2, declarations.Declaration2);
+                verify.UpdateDeclarations(TagConstants.UserDeclaration3, declarations.Declaration3);
+            });
+
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("IdDocumentTypes")]
+        public IEnumerable<Object> GetIdDocumentTypes()
+        {
+            return dc.Table<TaxonomyTerm>()
+                .Where(x => x.TaxonomyId == IdConstants.IdDocumentType)
+                .Select(x => x.ToObject<VmTaxonomyTerm>())
+                .OrderBy(x => x.Term)
+                .ToList();
+        }
+
         [HttpGet("IdentificationVerification")]
-        public IdentificationVerificationViewModel GetIdentificationVerification()
+        public VmIdentificationVerification GetIdentificationVerification()
         {
             var identification = dc.Table<UserIdentification>().FirstOrDefault(x => x.UserId == GetCurrentUser().Id);
-            return new IdentificationVerificationViewModel
+            return new VmIdentificationVerification
             {
                 DocumentNumber = identification.DocumentNumber,
                 DocumentTypeId = identification.DocumentTypeId,
@@ -83,7 +130,7 @@ namespace Voicecoin.RestApi
         }
 
         [HttpPost("IdentificationVerification")]
-        public async Task<IActionResult> UploadIdentificationVerification(IdentificationVerificationViewModel model)
+        public async Task<IActionResult> UploadIdentificationVerification(VmIdentificationVerification model)
         {
             dc.DbTran(async () =>
             {

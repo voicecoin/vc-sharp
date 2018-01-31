@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Voicecoin.Core.Account
 {
-    public class IdentificationVerificationViewModel
+    public class VmIdentificationVerification
     {
         public IFormFile FrontSidePhotoId { get; set; }
 

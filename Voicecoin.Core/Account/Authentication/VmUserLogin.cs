@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Voicecoin.Core.Account
 {
-    public class UserLoginViewModel
+    public class VmUserLogin
     {
         public String UserName { get; set; }
 

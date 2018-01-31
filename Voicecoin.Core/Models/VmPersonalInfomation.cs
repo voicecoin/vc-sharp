@@ -13,6 +13,6 @@ namespace Voicecoin.Core.Models
 
         public DateTime? BirthDay { get; set; }
 
-        public UserAddress Address { get; set; }
+        public VmUserAddress Address { get; set; }
     }
 }

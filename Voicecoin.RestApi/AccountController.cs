@@ -146,9 +146,10 @@ namespace Voicecoin.RestApi
         [HttpPost]
         public IActionResult CreateUser([FromBody] VmUserCreate account)
         {
-            var existedUser = dc.Table<User>().FirstOrDefault(x => x.Email == account.Email);
+            var existedUser = dc.Table<User>().Any(x => x.Email.ToLower() == account.Email.ToLower() ||
+                x.UserName.ToLower() == account.Email.ToLower());
 
-            if (existedUser != null) return BadRequest("Account already existed");
+            if (existedUser) return BadRequest("Account already existed");
 
             var user = new User
             {

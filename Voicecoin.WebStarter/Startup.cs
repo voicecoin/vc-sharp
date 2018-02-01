@@ -88,7 +88,7 @@ namespace Voicecoin.WebStarter
             app.UseEntityDbContext(Configuration, env.ContentRootPath, new String[] { "Voicecoin.Core" });
             app.UseInitLoader();
 
-            //new AccountReceivableStatusJob().Execute(null);
+            new AccountReceivableStatusJob().Execute(null);
         }
 
     }

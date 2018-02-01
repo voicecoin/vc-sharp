@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Voicecoin.RestApi
 {
-    [AllowAnonymous]
+    /*[AllowAnonymous]
     [Produces("application/json")]
     [Route("coinbase/notification")]
     public class CoinbaseNotificationController : CoreController
@@ -22,5 +22,5 @@ namespace Voicecoin.RestApi
 
             return Ok();
         }
-    }
+    }*/
 }

@@ -57,7 +57,7 @@ namespace Voicecoin.RestApi
         {
             string userId = GetCurrentUser().Id;
             var contribution = new Contribution(GetCurrentUser().Id, dc, Database.Configuration);
-            var addresses = dc.Table<ContributorCurrencyAddress>().Where(x => x.UserId == userId).ToList();
+            var addresses = dc.Table<IcoContribution>().Where(x => x.UserId == userId).ToList();
 
             var pairs = new MarketCore(dc).GetPrices();
 
@@ -95,7 +95,7 @@ namespace Voicecoin.RestApi
         {
             string userId = GetCurrentUser().Id;
             var contribution = new Contribution(GetCurrentUser().Id, dc, Database.Configuration);
-            var addresses = dc.Table<ContributorCurrencyAddress>().Where(x => x.UserId == userId).ToList();
+            var addresses = dc.Table<IcoContribution>().Where(x => x.UserId == userId).ToList();
 
             var pairs = new MarketCore(dc).GetPrices();
 

@@ -32,7 +32,7 @@ namespace Voicecoin.Core
         public String GetAddress(CurrencyType currency, bool createIfNotExist)
         {
             // check if address exist
-            var address = dc.Table<ContributorCurrencyAddress>().FirstOrDefault(x => x.UserId == userId && x.Currency == currency);
+            var address = dc.Table<IcoContribution>().FirstOrDefault(x => x.UserId == userId && x.Currency == currency);
 
             if (address == null)
             {
@@ -40,7 +40,7 @@ namespace Voicecoin.Core
                 var account = accounts.Data.FirstOrDefault(x => x.Currency.Code == currency.ToString());
                 var addr = coinbase.CreateAddress(account.Id);
 
-                dc.Table<ContributorCurrencyAddress>().Add(new ContributorCurrencyAddress
+                dc.Table<IcoContribution>().Add(new IcoContribution
                 {
                     UserId = userId,
                     Currency = currency,

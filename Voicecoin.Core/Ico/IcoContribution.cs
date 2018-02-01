@@ -10,7 +10,7 @@ namespace Voicecoin.Core
     /// <summary>
     /// Receive money address
     /// </summary>
-    public class ContributorCurrencyAddress : DbRecord, IDbRecord
+    public class IcoContribution : DbRecord, IDbRecord
     {
         [StringLength(36)]
         public String UserId { get; set; }
@@ -24,5 +24,7 @@ namespace Voicecoin.Core
         /// Total Amount
         /// </summary>
         public Decimal Amount { get; set; }
+
+        public Decimal Token { get; set; }
     }
 }

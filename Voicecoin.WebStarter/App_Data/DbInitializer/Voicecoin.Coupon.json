@@ -1,7 +1,7 @@
 ﻿[
   {
-    "code": "3-CENTS",
-    "description": "No Description",
+    "code": "3CENTS",
+    "description": "3-CENTS",
     "amount": 0.03,
     "currency": "USD",
     "startDate": "2018-01-01",

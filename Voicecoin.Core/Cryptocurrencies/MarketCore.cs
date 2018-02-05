@@ -2,25 +2,29 @@
 using Coinbase.Currecny;
 using Coinbase.Models;
 using EntityFrameworkCore.BootKit;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Voicecoin.Core.Coupons;
 
 namespace Voicecoin.Core
 {
     public class MarketCore
     {
         private Database dc;
+        private IConfiguration config;
 
-        public MarketCore(Database db)
+        public MarketCore(Database db, IConfiguration config)
         {
             dc = db;
+            this.config = config;
         }
 
-        public List<PricePairModel> GetPrices()
+        public List<PricePairModel> GetUsdPrices()
         {
-            var ico = new IcoCore(dc).GetIcoStat();
+            var pricePairs = new List<PricePairModel>();
 
             var coinbase = new Client("", "");
 
@@ -30,71 +34,111 @@ namespace Voicecoin.Core
             var btcUsd = coinbase.GetBuyPrice("BTC-USD");
             btcUsd.Pair = "BTC-USD";
 
-            var vcUsd = new PricePairModel
+            // BTC - USD
+            pricePairs.Add(new PricePairModel
             {
-                Base = ico.Symbol,
+                Base = CurrencyType.BTC,
+                Currency = CurrencyType.USD,
+                Amount = btcUsd.Amount,
+                Pair = $"{CurrencyType.BTC}-{CurrencyType.USD}"
+            });
+
+            // ETH - USD
+            pricePairs.Add(new PricePairModel
+            {
+                Base = CurrencyType.ETH,
+                Currency = CurrencyType.USD,
+                Amount = ethUsd.Amount,
+                Pair = $"{CurrencyType.ETH}-{CurrencyType.USD}"
+            });
+
+
+            // VC - USD
+            var ico = new IcoCore(dc).GetIcoStat();
+            pricePairs.Add(new PricePairModel
+            {
+                Base = CurrencyType.VC,
                 Amount = ico.Price.Amount,
                 Currency = ico.Price.Currency,
-                Pair = $"{ico.Symbol}-{ico.Price.Currency}"
+                Pair = $"{CurrencyType.VC}-{ico.Price.Currency}"
+            });
+
+            return pricePairs;
+        }
+
+        public List<PricePairModel> ApplyCoupon(List<PricePairModel> pricePairs, string couponCode)
+        {
+            var couponCore = new CouponCore(dc, config);
+            var coupon = couponCore.GetCouponByCode(couponCode);
+            if(coupon != null)
+            {
+                pricePairs.First(x => x.Base == CurrencyType.VC).Amount = coupon.Amount;
+            }
+
+            return pricePairs;
+        }
+
+        public static PricePairModel GetPricePair(CurrencyType baseCurrency, CurrencyType targetCurrency, List<PricePairModel> usdPrices)
+        {
+            var bc = usdPrices.First(x => x.Base == baseCurrency);
+            var tc = usdPrices.First(x => x.Base == targetCurrency);
+
+            return new PricePairModel
+            {
+                Base = baseCurrency,
+                Currency = targetCurrency,
+                Amount = bc.Amount / tc.Amount,
+                Pair = $"{baseCurrency}-{targetCurrency}"
             };
+        }
 
-            var pricePairs = new List<PricePairModel>();
-
-            // VC - BASE UNIT
-            pricePairs.Add(new PricePairModel
-            {
-                Base = ico.Symbol,
-                Currency = ico.Price.Currency,
-                Amount = ico.Price.Amount,
-                Pair = $"{ico.Symbol}-{ico.Price.Currency}"
-            });
-
-            // BASE UNIT - VC
-            pricePairs.Add(new PricePairModel
-            {
-                Base = ico.Price.Currency,
-                Currency = ico.Symbol,
-                Amount = 1 / ico.Price.Amount,
-                Pair = $"{ico.Price.Currency}-{ico.Symbol}"
-            });
+        /*
+        public void MapMoreCurrencies(List<PricePairModel> pricePairs)
+        {
+            var btcUsd = pricePairs.First(x => x.Base == CurrencyType.BTC && x.Currency == CurrencyType.USD);
+            var ethUsd = pricePairs.First(x => x.Base == CurrencyType.ETH && x.Currency == CurrencyType.USD);
+            var vcUsd = pricePairs.First(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.USD);
 
             // VC - BTC
             pricePairs.Add(new PricePairModel
             {
-                Base = ico.Symbol,
+                Base = CurrencyType.VC,
                 Currency = CurrencyType.BTC,
                 Amount = vcUsd.Amount / btcUsd.Amount,
-                Pair = $"{ico.Symbol}-{CurrencyType.BTC.ToString()}"
+                Pair = $"{CurrencyType.VC}-{CurrencyType.BTC}"
             });
 
             // BTC - VC
             pricePairs.Add(new PricePairModel
             {
                 Base = CurrencyType.BTC,
-                Currency = ico.Symbol,
+                Currency = CurrencyType.VC,
                 Amount = btcUsd.Amount / vcUsd.Amount,
-                Pair = $"{CurrencyType.BTC.ToString()}-{ico.Symbol}"
+                Pair = $"{CurrencyType.BTC}-{CurrencyType.VC}"
             });
 
             // VC - ETH
             pricePairs.Add(new PricePairModel
             {
-                Base = ico.Symbol,
+                Base = CurrencyType.VC,
                 Currency = CurrencyType.ETH,
                 Amount = vcUsd.Amount / ethUsd.Amount,
-                Pair = $"{ico.Symbol}-{CurrencyType.ETH.ToString()}"
+                Pair = $"{CurrencyType.VC}-{CurrencyType.ETH}"
             });
 
             // ETH - VC
             pricePairs.Add(new PricePairModel
             {
                 Base = CurrencyType.ETH,
-                Currency = ico.Symbol,
+                Currency = CurrencyType.VC,
                 Amount = ethUsd.Amount / vcUsd.Amount,
-                Pair = $"{CurrencyType.ETH.ToString()}-{ico.Symbol}"
+                Pair = $"{CurrencyType.ETH}-{CurrencyType.VC}"
             });
 
-            return pricePairs;
-        }
+            // approximately
+            pricePairs.ForEach(x => {
+                x.Amount = Math.Round(x.Amount, 8);
+            });
+        }*/
     }
 }

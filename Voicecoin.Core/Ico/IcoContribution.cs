@@ -3,6 +3,7 @@ using EntityFrameworkCore.BootKit;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Voicecoin.Core
@@ -23,8 +24,18 @@ namespace Voicecoin.Core
         /// <summary>
         /// Total Amount
         /// </summary>
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "Money")]
         public Decimal Amount { get; set; }
 
+        /// <summary>
+        /// Total Tokens
+        /// </summary>
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "Money")]
         public Decimal Token { get; set; }
+
+        [ForeignKey("ContributionId")]
+        public List<ContributionTransaction> Transactions { get; set; }
     }
 }

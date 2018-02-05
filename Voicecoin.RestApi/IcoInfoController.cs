@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Voicecoin.Core;
+using Voicecoin.Core.Coupons;
 using Voicecoin.Core.Models;
 
 namespace Voicecoin.RestApi
@@ -56,10 +57,10 @@ namespace Voicecoin.RestApi
         public Object GetContributionStat()
         {
             string userId = GetCurrentUser().Id;
-            var contribution = new Contribution(GetCurrentUser().Id, dc, Database.Configuration);
+            var contribution = new ContributionCore(GetCurrentUser().Id, dc, Database.Configuration);
             var addresses = dc.Table<IcoContribution>().Where(x => x.UserId == userId).ToList();
 
-            var pairs = new MarketCore(dc).GetPrices();
+            var pairs = new MarketCore(dc, Database.Configuration).GetUsdPrices();
 
             var btcAmount = addresses.FirstOrDefault(x => x.Currency == CurrencyType.BTC)?.Amount;
             var ethAmount = addresses.FirstOrDefault(x => x.Currency == CurrencyType.ETH)?.Amount;
@@ -94,10 +95,10 @@ namespace Voicecoin.RestApi
         public Object GetPayableAddresses()
         {
             string userId = GetCurrentUser().Id;
-            var contribution = new Contribution(GetCurrentUser().Id, dc, Database.Configuration);
+            var contribution = new ContributionCore(GetCurrentUser().Id, dc, Database.Configuration);
             var addresses = dc.Table<IcoContribution>().Where(x => x.UserId == userId).ToList();
 
-            var pairs = new MarketCore(dc).GetPrices();
+            var pairs = new MarketCore(dc, Database.Configuration).GetUsdPrices();
 
             return new List<Object>
             {
@@ -117,13 +118,17 @@ namespace Voicecoin.RestApi
         }
 
         [HttpGet("address/{currency}")]
-        public String GetReceiveAddress([FromRoute] CurrencyType currency)
+        public String GetReceiveAddress([FromRoute] CurrencyType currency, [FromQuery] string coupon)
         {
             String address = String.Empty;
 
             dc.DbTran(() => {
-                var contribution = new Contribution(GetCurrentUser().Id, dc, Database.Configuration);
+                var contribution = new ContributionCore(GetCurrentUser().Id, dc, Database.Configuration);
                 address = contribution.GetAddress(currency, true);
+
+                // check wether coupon applied
+                var couponCore = new CouponCore(dc, Database.Configuration);
+                couponCore.ApplyCoupon(GetCurrentUser().Id, coupon);
             });
 
 

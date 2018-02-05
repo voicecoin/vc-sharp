@@ -91,14 +91,14 @@ namespace Voicecoin.RestApi
         /// <summary>
         /// Check if user already exists
         /// </summary>
-        /// <param name="userName">Email</param>
+        /// <param name="email">Email</param>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("exist")]
-        public Boolean UserExist([FromQuery] String userName)
+        public Boolean UserExist([FromQuery] String email)
         {
-            var user = dc.Table<User>().Any(x => x.UserName == userName);
+            var user = dc.Table<User>().Any(x => x.Email == email);
 
             return user;
         }
@@ -175,11 +175,14 @@ namespace Voicecoin.RestApi
             dc.DbTran(() =>
             {
                 var user = dc.Table<User>().FirstOrDefault(x => x.ActivationCode == token);
-                user.ActivationCode = String.Empty;
-                user.IsActivated = true;
+                if(user != null)
+                {
+                    user.ActivationCode = String.Empty;
+                    user.IsActivated = true;
+                }
             });
 
-            return Ok("Signup approved!");
+            return Ok("Account activated");
         }
 
         /// <summary>

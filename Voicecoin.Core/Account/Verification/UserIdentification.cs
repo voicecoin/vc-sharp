@@ -19,8 +19,10 @@ namespace Voicecoin.Core.Account
 
         public String DocumentNumber { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? IssueDate { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? ExpiryDate { get; set; }
     }
 }

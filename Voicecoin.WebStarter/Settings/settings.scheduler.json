@@ -2,7 +2,7 @@
   "Scheduler": {
     "Enable": true,
     "Crons": {
-      "AccountReceivableStatusJob": "0 0/10 * * * ?"
+      "ContributionTransactionStatusJob": "0 0/10 * * * ?"
     }
   }
 }

@@ -3,6 +3,7 @@ using EntityFrameworkCore.BootKit;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Voicecoin.Core.Models;
 
@@ -32,8 +33,12 @@ namespace Voicecoin.Core
 
         public CurrencyStatus Status { get; set; }
 
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "Money")]
         public Decimal AvailableSupply { get; set; }
 
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "Money")]
         public Decimal TotalSupply { get; set; }
     }
 }

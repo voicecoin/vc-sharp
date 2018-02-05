@@ -3,6 +3,7 @@ using EntityFrameworkCore.BootKit;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Voicecoin.Core.Models;
 
@@ -21,6 +22,8 @@ namespace Voicecoin.Core
         /// <summary>
         /// 1 base = 10 Amount Symbol
         /// </summary>
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "Money")]
         public Decimal Amount { get; set; }
 
         /// <summary>

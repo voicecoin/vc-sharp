@@ -12,21 +12,19 @@ namespace Voicecoin.Core.Coupons
     {
         private Database dc;
         private IConfiguration config;
-        private string userId;
 
-        public CouponCore(string userId, Database db, IConfiguration config)
+        public CouponCore(Database db, IConfiguration config)
         {
             dc = db;
             this.config = config;
-            this.userId = userId;
         }
 
-        public string GenerateCouponLink(String couponId)
+        public string GenerateCouponLink(String userId, String couponId)
         {
             var refer = new ReferList
             {
                 CouponId = couponId,
-                ReferCode = ShortId.Generate(false, false, 6).ToUpper(),
+                ReferCode = ShortId.Generate(true, false, 6).ToUpper(),
                 Referee = userId
             };
 
@@ -37,6 +35,27 @@ namespace Voicecoin.Core.Coupons
             return $"{host}/invite/{refer.ReferCode}";
         }
 
+        public Coupon GetLastedCouponByUser(String userId)
+        {
+            var query = from coupon in dc.Table<Coupon>()
+                        join up in dc.Table<UserCoupon>() on coupon.Id equals up.CouponId
+                        where coupon.StartDate <= DateTime.UtcNow && 
+                            coupon.EndDate >= DateTime.UtcNow && 
+                            up.UserId == userId
+                        orderby up.UpdatedTime descending
+                        select coupon;
+
+            return query.FirstOrDefault();
+        }
+
+        public Coupon GetCouponByCode(string code)
+        {
+            var coupon = dc.Table<Coupon>().FirstOrDefault(x => x.StartDate <= DateTime.UtcNow
+                && x.EndDate >= DateTime.UtcNow && x.Code == code);
+
+            return coupon;
+        }
+
         public List<Coupon> GetAvailableCoupons()
         {
             var coupons = dc.Table<Coupon>().Where(x => x.StartDate <= DateTime.UtcNow
@@ -44,6 +63,24 @@ namespace Voicecoin.Core.Coupons
                 .Select(x => x);
 
             return coupons.ToList();
+        }
+
+        public void ApplyCoupon(String userId, string code)
+        {
+            var couponId = dc.Table<Coupon>().FirstOrDefault(x => x.StartDate <= DateTime.UtcNow
+                && x.EndDate >= DateTime.UtcNow && x.Code == code)?.Id;
+
+            if(!String.IsNullOrEmpty(couponId))
+            {
+                if(!dc.Table<UserCoupon>().Any(x => x.UserId == userId && x.CouponId == couponId))
+                {
+                    dc.Table<UserCoupon>().Add(new UserCoupon
+                    {
+                        UserId = userId,
+                        CouponId = couponId
+                    });
+                }
+            }
         }
     }
 }

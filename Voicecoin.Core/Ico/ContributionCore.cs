@@ -10,13 +10,13 @@ using System.Text;
 
 namespace Voicecoin.Core
 {
-    public class Contribution
+    public class ContributionCore
     {
         private Client coinbase;
         private Database dc;
         private String userId;
 
-        public Contribution(String userId, Database dc, IConfiguration config)
+        public ContributionCore(String userId, Database dc, IConfiguration config)
         {
             coinbase = new Client(config.GetSection("Coinbase:Key").Value, config.GetSection("Coinbase:Secret").Value);
             this.dc = dc;

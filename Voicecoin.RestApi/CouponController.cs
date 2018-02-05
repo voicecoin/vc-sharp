@@ -11,6 +11,16 @@ namespace Voicecoin.RestApi
 {
     public class CouponController : CoreController
     {
+        [HttpGet("validate/{code}")]
+        public IActionResult ValidateCouponCode([FromRoute] string code)
+        {
+            var couponCore = new CouponCore(dc, Database.Configuration);
+
+            bool existed = couponCore.GetCouponByCode(code) != null;
+
+            return Ok(existed);
+        }
+
         /// <summary>
         /// Get current available coupons
         /// </summary>
@@ -18,7 +28,7 @@ namespace Voicecoin.RestApi
         [HttpGet("available")]
         public IActionResult GetAvailableCoupons()
         {
-            var coupon = new CouponCore(GetCurrentUser().Id, dc, Database.Configuration);
+            var coupon = new CouponCore(dc, Database.Configuration);
             return Ok(coupon.GetAvailableCoupons());
         }
 
@@ -30,11 +40,11 @@ namespace Voicecoin.RestApi
         [HttpGet("generate/{couponId}")]
         public IActionResult GenerateCouponLink([FromRoute] string couponId)
         {
-            var coupon = new CouponCore(GetCurrentUser().Id, dc, Database.Configuration);
+            var coupon = new CouponCore(dc, Database.Configuration);
             string link = String.Empty;
 
             dc.DbTran(() => {
-                link = coupon.GenerateCouponLink(couponId);
+                link = coupon.GenerateCouponLink(GetCurrentUser().Id, couponId);
             });
 
             return Ok($"{link}");

@@ -2,6 +2,7 @@
 using Coinbase.Currecny;
 using Coinbase.Models;
 using ContentFoundation.RestApi;
+using EntityFrameworkCore.BootKit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,23 +17,29 @@ namespace Voicecoin.RestApi
     {
         [AllowAnonymous]
         [HttpGet("prices")]
-        public List<Object> GetPricePairs()
+        public List<Object> GetPricePairs([FromQuery] string coupon)
         {
-            var pairs = new MarketCore(dc).GetPrices();
+            var marketCore = new MarketCore(dc, Database.Configuration);
+            var pairs = marketCore.GetUsdPrices();
+
+            if (!String.IsNullOrEmpty(coupon))
+            {
+                pairs = marketCore.ApplyCoupon(pairs, coupon);
+            }
 
             var result = new List<Object>();
             result.Add(new
             {
                 Name = CurrencyType.BTC,
-                V2c = pairs.First(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.BTC).Amount,
-                C2v = pairs.First(x => x.Base == CurrencyType.BTC && x.Currency == CurrencyType.VC).Amount
+                V2c = Math.Round(MarketCore.GetPricePair(CurrencyType.VC, CurrencyType.BTC, pairs).Amount, 8),
+                C2v = Math.Round(MarketCore.GetPricePair(CurrencyType.BTC, CurrencyType.VC, pairs).Amount, 8)
             });
 
             result.Add(new
             {
                 Name = CurrencyType.ETH,
-                V2c = pairs.First(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.ETH).Amount,
-                C2v = pairs.First(x => x.Base == CurrencyType.ETH && x.Currency == CurrencyType.VC).Amount
+                V2c = Math.Round(MarketCore.GetPricePair(CurrencyType.VC, CurrencyType.ETH, pairs).Amount, 8),
+                C2v = Math.Round(MarketCore.GetPricePair(CurrencyType.ETH, CurrencyType.VC, pairs).Amount, 8)
             });
 
             return result;

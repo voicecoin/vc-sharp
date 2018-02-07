@@ -35,19 +35,6 @@ namespace Voicecoin.Core.Coupons
             return $"{host}/invite/{refer.ReferCode}";
         }
 
-        public Coupon GetLastedCouponByUser(String userId)
-        {
-            var query = from coupon in dc.Table<Coupon>()
-                        join up in dc.Table<UserCoupon>() on coupon.Id equals up.CouponId
-                        where coupon.StartDate <= DateTime.UtcNow && 
-                            coupon.EndDate >= DateTime.UtcNow && 
-                            up.UserId == userId
-                        orderby up.UpdatedTime descending
-                        select coupon;
-
-            return query.FirstOrDefault();
-        }
-
         public Coupon GetCouponByCode(string code)
         {
             var coupon = dc.Table<Coupon>().FirstOrDefault(x => x.StartDate <= DateTime.UtcNow
@@ -63,24 +50,6 @@ namespace Voicecoin.Core.Coupons
                 .Select(x => x);
 
             return coupons.ToList();
-        }
-
-        public void ApplyCoupon(String userId, string code)
-        {
-            var couponId = dc.Table<Coupon>().FirstOrDefault(x => x.StartDate <= DateTime.UtcNow
-                && x.EndDate >= DateTime.UtcNow && x.Code == code)?.Id;
-
-            if(!String.IsNullOrEmpty(couponId))
-            {
-                if(!dc.Table<UserCoupon>().Any(x => x.UserId == userId && x.CouponId == couponId))
-                {
-                    dc.Table<UserCoupon>().Add(new UserCoupon
-                    {
-                        UserId = userId,
-                        CouponId = couponId
-                    });
-                }
-            }
         }
     }
 }

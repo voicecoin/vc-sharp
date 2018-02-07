@@ -165,7 +165,7 @@ namespace Voicecoin.RestApi
                 await userCore.CreateUser(user);
             });
 
-            return Ok("Create user successfully. Please active your account through email.");
+            return Ok("Register successfully. Please active your account through email.");
         }
 
         [AllowAnonymous]

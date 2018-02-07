@@ -37,6 +37,14 @@ namespace Voicecoin.RestApi
             return Database.Configuration.GetSection(path).AsEnumerable().ToList();
         }
 
+        protected String CurrentUserId
+        {
+            get
+            {
+                return this.User.Claims.FirstOrDefault(x => x.Type.Equals("UserId"))?.Value;
+            }
+        }
+
         protected User GetCurrentUser()
         {
             if (this.User != null)

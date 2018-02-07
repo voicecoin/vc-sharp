@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using Voicecoin.Core;
 using Voicecoin.Core.Coupons;
+using Voicecoin.Core.Ico;
 using Voicecoin.Core.Models;
 
 namespace Voicecoin.RestApi
@@ -58,7 +59,7 @@ namespace Voicecoin.RestApi
         {
             string userId = GetCurrentUser().Id;
             var contribution = new ContributionCore(GetCurrentUser().Id, dc, Database.Configuration);
-            var addresses = dc.Table<IcoContribution>().Where(x => x.UserId == userId).ToList();
+            var addresses = dc.Table<ContributionTransaction>().Where(x => x.UserId == userId).ToList();
 
             var pairs = new MarketCore(dc, Database.Configuration).GetUsdPrices();
 
@@ -96,7 +97,7 @@ namespace Voicecoin.RestApi
         {
             string userId = GetCurrentUser().Id;
             var contribution = new ContributionCore(GetCurrentUser().Id, dc, Database.Configuration);
-            var addresses = dc.Table<IcoContribution>().Where(x => x.UserId == userId).ToList();
+            var addresses = dc.Table<ContributionTransaction>().Where(x => x.UserId == userId).ToList();
 
             var pairs = new MarketCore(dc, Database.Configuration).GetUsdPrices();
 
@@ -117,22 +118,46 @@ namespace Voicecoin.RestApi
             };
         }
 
-        [HttpGet("address/{currency}")]
-        public String GetReceiveAddress([FromRoute] CurrencyType currency, [FromQuery] string coupon)
+        [HttpPost("purchase/{currency}")]
+        public ContributionTransaction Purchase([FromRoute] CurrencyType currency, [FromBody] VmContribution contribution)
         {
-            String address = String.Empty;
+            // check wether coupon applied
+            var couponCore = new CouponCore(dc, Database.Configuration);
+            var coupon = couponCore.GetCouponByCode(contribution.CouponCode);
 
-            dc.DbTran(() => {
-                var contribution = new ContributionCore(GetCurrentUser().Id, dc, Database.Configuration);
-                address = contribution.GetAddress(currency, true);
+            var contributionCore = new ContributionCore(GetCurrentUser().Id, dc, Database.Configuration);
+            String address = contributionCore.GetAddress(currency);
 
-                // check wether coupon applied
-                var couponCore = new CouponCore(dc, Database.Configuration);
-                couponCore.ApplyCoupon(GetCurrentUser().Id, coupon);
-            });
+            var marketCore = new MarketCore(dc, Database.Configuration);
+            var pairs = marketCore.GetUsdPrices();
+            pairs = marketCore.ApplyCoupon(pairs, contribution.CouponCode);
+            var pricePair = MarketCore.GetPricePair(CurrencyType.VC, contribution.Currency, pairs);
 
+            var transaction = new ContributionTransaction
+            {
+                Address = address,
+                TokenAmount = contribution.TokenAmount,
+                Amount = contribution.TokenAmount * pricePair.Amount,
+                UsdPrice = pairs.Find(x => x.Base == contribution.Currency && x.Currency == CurrencyType.USD).Amount,
+                CouponId = coupon?.Id,
+                Currency = contribution.Currency,
+                UserId = GetCurrentUser().Id,
+                TokenUsdPrice = pairs.Find(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.USD).Amount,
+                Status = ContributionStatus.Unfullfilled
+            };
 
-            return address;
+            dc.DbTran(() => dc.Table<ContributionTransaction>().Add(transaction));
+
+            return transaction;
+        }
+
+        [HttpGet("purchases")]
+        public IEnumerable<ContributionTransaction> Purchases()
+        {
+            return dc.Table<ContributionTransaction>()
+                .Where(x => x.UserId == GetCurrentUser().Id)
+                .OrderByDescending(x => x.UpdatedTime)
+                .Take(100);
         }
     }
 }

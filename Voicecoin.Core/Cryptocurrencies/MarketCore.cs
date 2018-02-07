@@ -68,6 +68,8 @@ namespace Voicecoin.Core
 
         public List<PricePairModel> ApplyCoupon(List<PricePairModel> pricePairs, string couponCode)
         {
+            if (String.IsNullOrEmpty(couponCode)) return pricePairs;
+
             var couponCore = new CouponCore(dc, config);
             var coupon = couponCore.GetCouponByCode(couponCode);
             if(coupon != null)

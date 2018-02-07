@@ -17,7 +17,7 @@ namespace Voicecoin.Core
     {
         public override Task Execute(IJobExecutionContext context)
         {
-            var marketCore = new MarketCore(dc, Database.Configuration);
+            /*var marketCore = new MarketCore(dc, Database.Configuration);
             var pairs = marketCore.GetUsdPrices();
 
             UpdateContributionAmount4ETH(marketCore, pairs);
@@ -29,14 +29,14 @@ namespace Voicecoin.Core
                 decimal soldTokenAmount = dc.Table<IcoContribution>().Sum(x => x.Token);
                 currency.AvailableSupply = currency.TotalSupply - soldTokenAmount;
                 currency.UpdatedTime = DateTime.UtcNow;
-            });
+            });*/
 
             return Task.CompletedTask;
         }
 
         private void UpdateContributionAmount4ETH(MarketCore marketCore, List<PricePairModel> pricePairs)
         {
-            var addresses = dc.Table<IcoContribution>()
+            /*var addresses = dc.Table<IcoContribution>()
                 .Where(x => x.Currency == CurrencyType.ETH)
                 .OrderByDescending(x => x.UpdatedTime)
                 .Select(x => x.Address)
@@ -78,12 +78,12 @@ namespace Voicecoin.Core
                     conAddr.UpdatedTime = DateTime.UtcNow;
                 });
                 
-            });
+            });*/
         }
 
         private void UpdateContributionAmount4BTC(MarketCore marketCore, List<PricePairModel> pricePairs)
         {
-            var coin2Token = pricePairs.First(x => x.Base == CurrencyType.BTC && x.Currency == CurrencyType.VC);
+            /*var coin2Token = pricePairs.First(x => x.Base == CurrencyType.BTC && x.Currency == CurrencyType.VC);
             var coin2Usd = pricePairs.First(x => x.Base == CurrencyType.BTC && x.Currency == CurrencyType.USD);
             var token2Usd = pricePairs.First(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.USD);
 
@@ -106,12 +106,12 @@ namespace Voicecoin.Core
                     addr.UpdatedTime = DateTime.UtcNow;
                 });
 
-            });
+            });*/
         }
 
         private void AddTransaction(string contributionId, decimal amount, string transaction, CurrencyType currency, List<PricePairModel> pricePairs)
         {
-            var coin2Token = MarketCore.GetPricePair(currency, CurrencyType.VC, pricePairs);
+            /*var coin2Token = MarketCore.GetPricePair(currency, CurrencyType.VC, pricePairs);
             var coin2Usd = pricePairs.First(x => x.Base == currency && x.Currency == CurrencyType.USD);
             var token2Usd = pricePairs.First(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.USD);
 
@@ -126,7 +126,7 @@ namespace Voicecoin.Core
                     Transaction = transaction,
                     UsdPrice = coin2Usd.Amount
                 });
-            }
+            }*/
         }
     }
 }

@@ -27,32 +27,22 @@ namespace Voicecoin.Core
         /// 
         /// </summary>
         /// <param name="currency">BTC</param>
-        /// <param name="createIfNotExist">Create a new address if no address found</param>
         /// <returns></returns>
-        public String GetAddress(CurrencyType currency, bool createIfNotExist)
+        public String GetAddress(CurrencyType currency)
         {
             // check if address exist
-            var address = dc.Table<IcoContribution>().FirstOrDefault(x => x.UserId == userId && x.Currency == currency);
-
-            if (address == null)
+            //var accounts = coinbase.GetAccounts();
+            //var account = accounts.Data.FirstOrDefault(x => x.Currency.Code == currency.ToString());
+            // For Debug
+            //var addr = coinbase.CreateAddress(account.Id);
+            var newAddress = new ContributionTransaction
             {
-                var accounts = coinbase.GetAccounts();
-                var account = accounts.Data.FirstOrDefault(x => x.Currency.Code == currency.ToString());
-                var addr = coinbase.CreateAddress(account.Id);
+                UserId = userId,
+                Currency = currency,
+                Address = "1Gt9VsPK3oQS6qmPLNNSamvRaQt9pMth94" //addr.Address
+            };
 
-                dc.Table<IcoContribution>().Add(new IcoContribution
-                {
-                    UserId = userId,
-                    Currency = currency,
-                    Address = addr.Address
-                });
-
-                return addr.Address;
-            }
-            else
-            {
-                return address.Address;
-            }
+            return newAddress.Address;
         }
     }
 }

@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Coinbase.NetSDK" Version="1.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="1.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="1.1.0" />
@@ -32,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Voicecoin.Core\Voicecoin.Core.csproj" />
     <ProjectReference Include="..\Voicecoin.RestApi\Voicecoin.RestApi.csproj" />
   </ItemGroup>
 

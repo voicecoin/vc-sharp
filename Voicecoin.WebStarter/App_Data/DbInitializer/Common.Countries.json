@@ -10,8 +10,8 @@
     "num_code": "248",
     "alpha_2_code": "AX",
     "alpha_3_code": "ALA",
-    "name": "Åland Islands",
-    "nationality": "Åland Island"
+    "name": "Aland Islands",
+    "nationality": "Aland Island"
   },
   {
     "num_code": "8",
@@ -249,7 +249,7 @@
     "alpha_2_code": "BF",
     "alpha_3_code": "BFA",
     "name": "Burkina Faso",
-    "nationality": "Burkinabé"
+    "nationality": "Burkinabe"
   },
   {
     "num_code": "108",
@@ -381,7 +381,7 @@
     "num_code": "384",
     "alpha_2_code": "CI",
     "alpha_3_code": "CIV",
-    "name": "Côte d'Ivoire",
+    "name": "Cote d'Ivoire",
     "nationality": "Ivorian"
   },
   {
@@ -402,8 +402,8 @@
     "num_code": "531",
     "alpha_2_code": "CW",
     "alpha_3_code": "CUW",
-    "name": "Curaçao",
-    "nationality": "Curaçaoan"
+    "name": "Curacao",
+    "nationality": "Curacaoan"
   },
   {
     "num_code": "196",
@@ -1026,7 +1026,7 @@
     "alpha_2_code": "MC",
     "alpha_3_code": "MCO",
     "name": "Monaco",
-    "nationality": "Monégasque, Monacan"
+    "nationality": "Monegasque, Monacan"
   },
   {
     "num_code": "496",
@@ -1263,8 +1263,8 @@
     "num_code": "638",
     "alpha_2_code": "RE",
     "alpha_3_code": "REU",
-    "name": "Réunion",
-    "nationality": "Réunionese, Réunionnais"
+    "name": "Reunion",
+    "nationality": "Reunionese, Reunionnais"
   },
   {
     "num_code": "642",
@@ -1291,8 +1291,8 @@
     "num_code": "652",
     "alpha_2_code": "BL",
     "alpha_3_code": "BLM",
-    "name": "Saint Barthélemy",
-    "nationality": "Barthélemois"
+    "name": "Saint Barthelemy",
+    "nationality": "Barthelemois"
   },
   {
     "num_code": "654",
@@ -1355,7 +1355,7 @@
     "alpha_2_code": "ST",
     "alpha_3_code": "STP",
     "name": "Sao Tome and Principe",
-    "nationality": "São Toméan"
+    "nationality": "Sao Tomean"
   },
   {
     "num_code": "682",

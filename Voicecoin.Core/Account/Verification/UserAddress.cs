@@ -32,5 +32,8 @@ namespace Voicecoin.Core.Account
 
         [MaxLength(64)]
         public string Country { get; set; }
+
+        [ForeignKey("UserId")]
+        public User User { get; set; }
     }
 }

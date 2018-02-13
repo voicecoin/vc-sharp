@@ -88,6 +88,18 @@ namespace Voicecoin.Core
                     CountryCode = "US"
                 });
             });
+
+            json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Common.States-CN.json");
+            states = JsonConvert.DeserializeObject<List<JObject>>(json);
+
+            states.ForEach(state => {
+                dc.Table<State>().Add(new State
+                {
+                    Name = state["name"].ToString(),
+                    Abbr = state["abbr"].ToString(),
+                    CountryCode = "CN"
+                });
+            });
         }
     }
 }

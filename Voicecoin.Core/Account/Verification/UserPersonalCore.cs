@@ -26,12 +26,33 @@ namespace Voicecoin.Core.Account
         public void UpdatePersonalInfo(User model)
         {
             var user = dc.Table<User>().Find(userId);
+            var address = dc.Table<UserAddress>().FirstOrDefault(x => x.UserId == userId);
 
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.Nationality = model.Nationality;
-            user.BirthDay = model.BirthDay;
-            user.Address = model.Address;
+            user.Birthday = model.Birthday;
+            user.UpdatedTime = DateTime.UtcNow;
+
+            if (address == null)
+            {
+                user.Address = model.Address;
+                user.Address.UserId = user.Id;
+                user.Address.UpdatedTime = DateTime.UtcNow;
+            }
+            else
+            {
+                address.AddressLine1 = model.Address.AddressLine1;
+                address.AddressLine2 = model.Address.AddressLine2;
+                address.Country = model.Address.Country;
+                address.County = model.Address.County;
+                address.State = model.Address.State;
+                address.City = model.Address.City;
+                address.Zipcode = model.Address.Zipcode;
+                address.UpdatedTime = DateTime.UtcNow;
+            }
+
+            dc.SaveChanges();
         }
     }
 }

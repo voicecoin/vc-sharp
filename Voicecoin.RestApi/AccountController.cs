@@ -13,6 +13,37 @@ namespace Voicecoin.RestApi
     public class AccountController : CoreController
     {
         /// <summary>
+        /// Sign up a new account
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult CreateUser([FromBody] VmUserCreate account)
+        {
+            var existedUser = dc.Table<User>().Any(x => x.Email.ToLower() == account.Email.ToLower() ||
+                x.UserName.ToLower() == account.Email.ToLower());
+
+            if (existedUser) return BadRequest("Account already existed");
+
+            var user = new User
+            {
+                Authenticaiton = new UserAuth { Password = account.Password },
+                Email = account.Email,
+                UserName = account.Email,
+                FirstName = account.FullName.Split(' ').First(),
+                LastName = account.FullName.Split(' ').Last()
+            };
+
+            dc.DbTran(async delegate {
+                var userCore = new AccountCore(dc, Database.Configuration);
+                await userCore.CreateUser(user);
+            });
+
+            return Ok("Register successfully. Please active your account through email.");
+        }
+
+        /// <summary>
         /// Get a valid token after login
         /// </summary>
         /// <param name="username">User Email</param>
@@ -29,7 +60,11 @@ namespace Voicecoin.RestApi
             }
 
             // validate from local
-            var user = dc.Table<User>().FirstOrDefault(x => x.UserName == userModel.UserName);
+            var user = (from usr in dc.Table<User>()
+                       join auth in dc.Table<UserAuth>() on usr.Id equals auth.UserId
+                       where usr.UserName == userModel.UserName
+                       select auth).First();
+
             if (user != null)
             {
                 if (!user.IsActivated)
@@ -42,7 +77,7 @@ namespace Voicecoin.RestApi
                     string hash = PasswordHelper.Hash(userModel.Password, user.Salt);
                     if (user.Password == hash)
                     {
-                        return Ok(JwtToken.GenerateToken(Database.Configuration, user.Id));
+                        return Ok(JwtToken.GenerateToken(Database.Configuration, user.UserId));
                     }
                     else
                     {
@@ -84,7 +119,7 @@ namespace Voicecoin.RestApi
         [HttpGet]
         public VmUser GetUser()
         {
-            var user = dc.Table<User>().Find(GetCurrentUser().Id);
+            var user = dc.Table<User>().Find(CurrentUserId);
             return user.ToObject<VmUser>();
         }
 
@@ -112,10 +147,19 @@ namespace Voicecoin.RestApi
         [HttpPut("changepassword")]
         public bool ChangePassword(string oldpassword, string newpassword)
         {
-            dc.DbTran(() => {
-                var user = dc.Table<User>().FirstOrDefault(x => x.Id == GetCurrentUser().Id && x.Password == oldpassword);
-                user.Password = newpassword;
-            });
+            var authId = (from usr in dc.Table<User>()
+                        join auth in dc.Table<UserAuth>() on usr.Id equals auth.UserId
+                        where usr.Id == CurrentUserId && auth.Password == oldpassword
+                        select auth.Id).FirstOrDefault();
+
+            if (!String.IsNullOrEmpty(authId))
+            {
+                dc.DbTran(() => {
+                    var user = dc.Table<UserAuth>().Find(authId);
+                    user.Password = newpassword;
+                });
+            }
+
 
             return true;
         }
@@ -137,44 +181,17 @@ namespace Voicecoin.RestApi
             return CreatedAtAction("UpdateUser", new { id = accountModel.Id }, accountModel.Id);
         }
 
-        /// <summary>
-        /// Sign up a new account
-        /// </summary>
-        /// <param name="account"></param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] VmUserCreate account)
-        {
-            var existedUser = dc.Table<User>().Any(x => x.Email.ToLower() == account.Email.ToLower() ||
-                x.UserName.ToLower() == account.Email.ToLower());
-
-            if (existedUser) return BadRequest("Account already existed");
-
-            var user = new User
-            {
-                Password = account.Password,
-                Email = account.Email,
-                UserName = account.Email,
-                FirstName = account.FullName.Split(' ').First(),
-                LastName = account.FullName.Split(' ').Last()
-            };
-
-            dc.DbTran(async delegate {
-                var userCore = new AccountCore(dc, Database.Configuration);
-                await userCore.CreateUser(user);
-            });
-
-            return Ok("Register successfully. Please active your account through email.");
-        }
-
         [AllowAnonymous]
         [HttpGet("activate/{token}")]
         public IActionResult ActivateAccount([FromRoute] String token)
         {
             dc.DbTran(() =>
             {
-                var user = dc.Table<User>().FirstOrDefault(x => x.ActivationCode == token);
+                var user = (from usr in dc.Table<User>()
+                            join auth in dc.Table<UserAuth>() on usr.Id equals auth.UserId
+                            where auth.ActivationCode == token
+                            select auth).FirstOrDefault();
+
                 if(user != null)
                 {
                     user.ActivationCode = String.Empty;

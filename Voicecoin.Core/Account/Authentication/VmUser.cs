@@ -10,7 +10,7 @@ namespace Voicecoin.Core.Account
         {
             get
             {
-                return $"{FirstName} {LastName}";
+                return $"{FirstName}";
             }
         }
         public String FirstName { get; set; }

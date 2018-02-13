@@ -1,0 +1,167 @@
+﻿[
+  {
+    "name": "Guangxi",
+    "abbr": "桂",
+    "native": "广西"
+  },
+  {
+    "name": "Nei Mongol",
+    "abbr": "蒙",
+    "native": "内蒙古"
+  },
+  {
+    "name": "Ningxia",
+    "abbr": "宁",
+    "native": "宁夏"
+  },
+  {
+    "name": "Xinjiang",
+    "abbr": "新",
+    "native": "新疆"
+  },
+  {
+    "name": "Xizang",
+    "abbr": "藏",
+    "native": "西藏"
+  },
+  {
+    "name": "Beijing",
+    "abbr": "京",
+    "native": "北京"
+  },
+  {
+    "name": "Chongqing",
+    "abbr": "渝",
+    "native": "重庆"
+  },
+  {
+    "name": "Shanghai",
+    "abbr": "沪",
+    "native": "上海"
+  },
+  {
+    "name": "Tianjin",
+    "abbr": "津",
+    "native": "天津"
+  },
+  {
+    "name": "Anhui",
+    "abbr": "皖",
+    "native": "安徽"
+  },
+  {
+    "name": "Fujian",
+    "abbr": "闽",
+    "native": "福建"
+  },
+  {
+    "name": "Gansu",
+    "abbr": "甘",
+    "native": "甘肃"
+  },
+  {
+    "name": "Guangdong",
+    "abbr": "粤",
+    "native": "广东"
+  },
+  {
+    "name": "Guizhou",
+    "abbr": "黔",
+    "native": "贵州"
+  },
+  {
+    "name": "Hainan",
+    "abbr": "琼",
+    "native": "海南"
+  },
+  {
+    "name": "Hebei",
+    "abbr": "冀",
+    "native": "河北"
+  },
+  {
+    "name": "Heilongjiang",
+    "abbr": "黑",
+    "native": "黑龙江"
+  },
+  {
+    "name": "Henan",
+    "abbr": "豫",
+    "native": "河南"
+  },
+  {
+    "name": "Hubei",
+    "abbr": "鄂",
+    "native": "湖北"
+  },
+  {
+    "name": "Hunan",
+    "abbr": "湘",
+    "native": "湖南"
+  },
+  {
+    "name": "Jiangsu",
+    "abbr": "苏",
+    "native": "江苏"
+  },
+  {
+    "name": "Jiangxi",
+    "abbr": "赣",
+    "native": "江西"
+  },
+  {
+    "name": "Jilin",
+    "abbr": "吉",
+    "native": "吉林"
+  },
+  {
+    "name": "Liaoning",
+    "abbr": "辽",
+    "native": "辽宁"
+  },
+  {
+    "name": "Qinghai",
+    "abbr": "青",
+    "native": "青海"
+  },
+  {
+    "name": "Shaanxi",
+    "abbr": "陕",
+    "native": "陕西"
+  },
+  {
+    "name": "Shandong",
+    "abbr": "鲁",
+    "native": "山东"
+  },
+  {
+    "name": "Shanxi",
+    "abbr": "晋",
+    "native": "山西"
+  },
+  {
+    "name": "Sichuan",
+    "abbr": "川",
+    "native": "四川"
+  },
+  {
+    "name": "Yunnan",
+    "abbr": "桂",
+    "native": "云南"
+  },
+  {
+    "name": "Zhejiang",
+    "abbr": "滇",
+    "native": "浙江"
+  },
+  {
+    "name": "Hong Kong",
+    "abbr": "港",
+    "native": "香港"
+  },
+  {
+    "name": "Macao",
+    "abbr": "澳",
+    "native": "澳门"
+  }
+]

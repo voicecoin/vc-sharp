@@ -41,25 +41,7 @@ namespace Voicecoin.RestApi
         {
             get
             {
-                return this.User.Claims.FirstOrDefault(x => x.Type.Equals("UserId"))?.Value;
-            }
-        }
-
-        protected User GetCurrentUser()
-        {
-            if (this.User != null)
-            {
-                return new User
-                {
-                    Id = this.User.Claims.FirstOrDefault(x => x.Type.Equals("UserId"))?.Value
-                };
-            }
-            else
-            {
-                return new User
-                {
-                    Id = Guid.Empty.ToString()
-                };
+                return this.User.Claims.FirstOrDefault(x => x.Type.Equals("UserId")).Value;
             }
         }
     }

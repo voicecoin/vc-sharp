@@ -11,7 +11,7 @@ namespace Voicecoin.Core.Models
 
         public String Nationality { get; set; }
 
-        public DateTime? BirthDay { get; set; }
+        public DateTime? Birthday { get; set; }
 
         public VmUserAddress Address { get; set; }
     }

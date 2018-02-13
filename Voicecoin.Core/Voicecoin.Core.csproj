@@ -9,16 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.3.16.2" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.17" />
     <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.6.1" />
     <PackageReference Include="BlockchainAPI" Version="4.0.0" />
     <PackageReference Include="Coinbase.NetSDK" Version="1.2.0" />
     <PackageReference Include="DotNetToolkit" Version="1.3.0" />
-    <PackageReference Include="EntityFrameworkCore.BootKit" Version="1.4.2" />
+    <PackageReference Include="EntityFrameworkCore.BootKit" Version="1.5.0" />
     <PackageReference Include="Etherscan.NetSDK" Version="0.1.0" />
     <PackageReference Include="Quartz" Version="3.0.2" />
     <PackageReference Include="RazorLight" Version="2.0.0-beta1" />
-    <PackageReference Include="shortid" Version="1.0.3" />
+    <PackageReference Include="shortid" Version="1.0.4" />
   </ItemGroup>
 
 </Project>

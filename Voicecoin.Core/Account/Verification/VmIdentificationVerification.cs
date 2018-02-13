@@ -7,9 +7,9 @@ namespace Voicecoin.Core.Account
 {
     public class VmIdentificationVerification
     {
-        public IFormFile FrontSidePhotoId { get; set; }
+        public IFormFile FrontSidePhoto { get; set; }
 
-        public IFormFile BackSidePhotoId { get; set; }
+        public IFormFile BackSidePhoto { get; set; }
 
         public String DocumentTypeId { get; set; }
 

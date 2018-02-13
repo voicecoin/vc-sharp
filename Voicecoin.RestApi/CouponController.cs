@@ -44,7 +44,7 @@ namespace Voicecoin.RestApi
             string link = String.Empty;
 
             dc.DbTran(() => {
-                link = coupon.GenerateCouponLink(GetCurrentUser().Id, couponId);
+                link = coupon.GenerateCouponLink(CurrentUserId, couponId);
             });
 
             return Ok($"{link}");

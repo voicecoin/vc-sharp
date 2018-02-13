@@ -34,6 +34,7 @@ namespace Voicecoin.RestApi
             };
 
             var query = dc.Table<Country>()
+                .OrderBy(x => x.Name)
                 .Select(x => new { Code = x.Code2, x.Name, x.Nationality });
 
             return result.LoadRecords(query);
@@ -41,7 +42,7 @@ namespace Voicecoin.RestApi
 
         [AllowAnonymous]
         [HttpGet("{country}/states")]
-        public PageResult<object> GetCountries([FromRoute] string country = "US")
+        public PageResult<object> GetCountryStates([FromRoute] string country = "US")
         {
             var result = new PageResult<object>
             {
@@ -49,7 +50,9 @@ namespace Voicecoin.RestApi
                 Size = 100
             };
 
-            var query = dc.Table<State>().Where(x => x.CountryCode == country)
+            var query = dc.Table<State>()
+                .Where(x => x.CountryCode == country)
+                .OrderBy(x => x.Name)
                 .Select(x => new { x.Abbr, x.Name });
 
             return result.LoadRecords(query);
@@ -58,20 +61,37 @@ namespace Voicecoin.RestApi
         [HttpGet("PersonalInformation")]
         public VmPersonalInfomation GetPersonalInformation()
         {
-            var personal = new UserPersonalCore(dc, GetCurrentUser().Id);
+            var personal = new UserPersonalCore(dc, CurrentUserId);
             var user = personal.GetPersonalInfo();
 
-            return user.ToObject<VmPersonalInfomation>();
+            return new VmPersonalInfomation
+            {
+                Address = new VmUserAddress
+                {
+                    AddressLine1 = user.Address.AddressLine1,
+                    AddressLine2 = user.Address.AddressLine2,
+                    City = user.Address.City,
+                    Country = user.Address.Country,
+                    County = user.Address.County,
+                    State = user.Address.State,
+                    Zipcode = user.Address.Zipcode
+                },
+                Birthday = user.Birthday,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Nationality = user.Nationality
+            };
         }
 
         [HttpPost("PersonalInformation")]
-        public IActionResult UploadPersonalInformation(VmPersonalInfomation vm)
+        public IActionResult UploadPersonalInformation([FromBody] VmPersonalInfomation vm)
         {
-            var personal = new UserPersonalCore(dc, GetCurrentUser().Id);
+            var personal = new UserPersonalCore(dc, CurrentUserId);
 
             dc.DbTran(() =>
             {
-                personal.UpdatePersonalInfo(vm.ToObject<User>());
+                var user = vm.ToObject<User>();
+                personal.UpdatePersonalInfo(user);
             });
 
             return Ok();
@@ -80,21 +100,21 @@ namespace Voicecoin.RestApi
         [HttpGet("Declarations")]
         public VmUserDeclarations GetDeclarations()
         {
-            var verify = new UserVerifyCore(dc, GetCurrentUser().Id);
+            var verify = new UserVerifyCore(dc, CurrentUserId);
             var declares = verify.GetDeclarations();
 
             return new VmUserDeclarations
             {
-                Declaration1 = declares.First(x => x.Tag == TagConstants.UserDeclaration1).Declaration,
-                Declaration2 = declares.First(x => x.Tag == TagConstants.UserDeclaration2).Declaration,
-                Declaration3 = declares.First(x => x.Tag == TagConstants.UserDeclaration3).Declaration
+                Declaration1 = declares.FirstOrDefault(x => x.Tag == TagConstants.UserDeclaration1)?.Declaration,
+                Declaration2 = declares.FirstOrDefault(x => x.Tag == TagConstants.UserDeclaration2)?.Declaration,
+                Declaration3 = declares.FirstOrDefault(x => x.Tag == TagConstants.UserDeclaration3)?.Declaration
             };
         }
 
         [HttpPost("Declarations")]
-        public IActionResult UploadDeclarations(VmUserDeclarations declarations)
+        public IActionResult UploadDeclarations([FromBody] VmUserDeclarations declarations)
         {
-            var verify = new UserVerifyCore(dc, GetCurrentUser().Id);
+            var verify = new UserVerifyCore(dc, CurrentUserId);
 
             dc.DbTran(() => {
                 verify.UpdateDeclarations(TagConstants.UserDeclaration1, declarations.Declaration1);
@@ -107,39 +127,48 @@ namespace Voicecoin.RestApi
 
         [AllowAnonymous]
         [HttpGet("IdDocumentTypes")]
-        public IEnumerable<Object> GetIdDocumentTypes()
+        public PageResult<Object> GetIdDocumentTypes()
         {
-            return dc.Table<TaxonomyTerm>()
+            var result = new PageResult<object>
+            {
+                Page = 1,
+                Size = 100
+            };
+
+            var query = dc.Table<TaxonomyTerm>()
                 .Where(x => x.TaxonomyId == IdConstants.IdDocumentType)
                 .Select(x => x.ToObject<VmTaxonomyTerm>())
-                .OrderBy(x => x.Term)
-                .ToList();
+                .OrderBy(x => x.Term);
+
+            return result.LoadRecords(query);
         }
 
         [HttpGet("IdentificationVerification")]
         public VmIdentificationVerification GetIdentificationVerification()
         {
-            var identification = dc.Table<UserIdentification>().FirstOrDefault(x => x.UserId == GetCurrentUser().Id);
+            var identification = dc.Table<UserIdentification>().FirstOrDefault(x => x.UserId == CurrentUserId);
             return new VmIdentificationVerification
             {
-                DocumentNumber = identification.DocumentNumber,
-                DocumentTypeId = identification.DocumentTypeId,
-                ExpiryDate = identification.ExpiryDate,
-                IssueDate = identification.IssueDate 
+                DocumentNumber = identification?.DocumentNumber,
+                DocumentTypeId = identification?.DocumentTypeId,
+                ExpiryDate = identification?.ExpiryDate,
+                IssueDate = identification?.IssueDate 
             };
         }
 
         [HttpPost("IdentificationVerification")]
         public async Task<IActionResult> UploadIdentificationVerification(VmIdentificationVerification model)
         {
+            var userId = CurrentUserId;
+
             dc.DbTran(async () =>
             {
-                var identification = dc.Table<UserIdentification>().FirstOrDefault(x => x.UserId == GetCurrentUser().Id);
+                var identification = dc.Table<UserIdentification>().FirstOrDefault(x => x.UserId == CurrentUserId);
                 if (identification == null)
                 {
                     dc.Table<UserIdentification>().Add(new UserIdentification
                     {
-                        UserId = GetCurrentUser().Id,
+                        UserId = CurrentUserId,
                         DocumentTypeId = model.DocumentTypeId,
                         DocumentNumber = model.DocumentNumber,
                         IssueDate = model.IssueDate,
@@ -154,15 +183,14 @@ namespace Voicecoin.RestApi
                     identification.ExpiryDate = model.ExpiryDate;
                 }
 
-                var storage = new FileStorageCore(dc, GetCurrentUser().Id);
-
-                if (model.FrontSidePhotoId.Length > 0)
+                if (model.FrontSidePhoto != null && model.FrontSidePhoto.Length > 0)
                 {
-                    var storageId = await storage.Save(model.FrontSidePhotoId);
+                    var storage = new FileStorageCore(dc, userId);
+                    var storageId = await storage.Save(model.FrontSidePhoto);
 
                     var doc = new UserDocument
                     {
-                        UserId = GetCurrentUser().Id,
+                        UserId = userId,
                         Tag = "FrontSidePhotoId",
                         FileStorageId = storageId
                     };
@@ -170,13 +198,14 @@ namespace Voicecoin.RestApi
                     dc.Table<UserDocument>().Add(doc);
                 }
 
-                if (model.BackSidePhotoId.Length > 0)
+                if (model.BackSidePhoto != null && model.BackSidePhoto.Length > 0)
                 {
-                    var storageId = await storage.Save(model.BackSidePhotoId);
+                    var storage = new FileStorageCore(dc, userId);
+                    var storageId = await storage.Save(model.BackSidePhoto);
 
                     var doc = new UserDocument
                     {
-                        UserId = GetCurrentUser().Id,
+                        UserId = userId,
                         Tag = "BackSidePhotoId",
                         FileStorageId = storageId
                     };
@@ -198,15 +227,16 @@ namespace Voicecoin.RestApi
         public async Task<IActionResult> UploadResidenceVerification(IFormFile file)
         {
             if (file.Length == 0) return BadRequest("File size is zero.");
+            var userId = CurrentUserId;
 
             dc.DbTran(async () =>
             {
-                var storage = new FileStorageCore(dc, GetCurrentUser().Id);
+                var storage = new FileStorageCore(dc, userId);
                 var storageId = await storage.Save(file);
 
                 var doc = new UserDocument
                 {
-                    UserId = GetCurrentUser().Id,
+                    UserId = userId,
                     Tag = "ResidenceVerification",
                     FileStorageId = storageId
                 };
@@ -231,15 +261,16 @@ namespace Voicecoin.RestApi
         public async Task<IActionResult> UploadDocumentSignature(IFormFile file)
         {
             if (file.Length == 0) return BadRequest("File size is zero.");
+            var userId = CurrentUserId;
 
             dc.DbTran(async () =>
             {
-                var storage = new FileStorageCore(dc, GetCurrentUser().Id);
+                var storage = new FileStorageCore(dc, userId);
                 var storageId = await storage.Save(file);
 
                 var doc = new UserDocument
                 {
-                    UserId = GetCurrentUser().Id,
+                    UserId = userId,
                     Tag = "DocumentSignature",
                     FileStorageId = storageId
                 };

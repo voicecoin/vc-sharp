@@ -14,25 +14,11 @@ namespace Voicecoin.Core.Account
     public class User : DbRecord, IDbRecord
     {
         /// <summary>
-        /// Username
+        /// Username, login name
         /// </summary>
         [Required]
         [MaxLength(64)]
         public String UserName { get; set; }
-
-        [Required]
-        [StringLength(128)]
-        [DataType(DataType.Password)]
-        public String Password { get; set; }
-
-        [Required]
-        [StringLength(64)]
-        public String Salt { get; set; }
-
-        [StringLength(32)]
-        public String ActivationCode { get; set; }
-
-        public Boolean IsActivated { get; set; }
 
         [Required]
         [StringLength(64)]
@@ -55,7 +41,7 @@ namespace Voicecoin.Core.Account
         public DateTime SignupDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime? BirthDay { get; set; }
+        public DateTime? Birthday { get; set; }
 
         [MaxLength(36)]
         public String Nationality { get; set; }
@@ -65,7 +51,8 @@ namespace Voicecoin.Core.Account
 
         public List<RoleOfUser> Roles { get; set; }
 
-        [ForeignKey("UserId")]
+        public UserAuth Authenticaiton { get; set; }
+
         public UserAddress Address { get; set; }
 
         public User()

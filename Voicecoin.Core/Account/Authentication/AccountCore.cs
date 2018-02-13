@@ -28,9 +28,9 @@ namespace Voicecoin.Core.Account
 
         public async Task CreateUser(User user)
         {
-            user.Salt = PasswordHelper.GetSalt();
-            user.Password = PasswordHelper.Hash(user.Password, user.Salt);
-            user.ActivationCode = Guid.NewGuid().ToString("N");
+            user.Authenticaiton.Salt = PasswordHelper.GetSalt();
+            user.Authenticaiton.Password = PasswordHelper.Hash(user.Authenticaiton.Password, user.Authenticaiton.Salt);
+            user.Authenticaiton.ActivationCode = Guid.NewGuid().ToString("N");
 
             dc.Table<User>().Add(user);
 
@@ -39,6 +39,8 @@ namespace Voicecoin.Core.Account
                 RoleId = AUTH_ROLE_ID,
                 UserId = user.Id
             });
+
+            dc.SaveChanges();
 
             EmailRequestModel model = new EmailRequestModel();
 
@@ -60,7 +62,7 @@ namespace Voicecoin.Core.Account
 
                 var cacheResult = engine.TemplateCache.RetrieveTemplate(model.Template);
 
-                var emailModel = new { Host = config.GetSection("clientHost").Value, ActivationCode = user.ActivationCode };
+                var emailModel = new { Host = config.GetSection("clientHost").Value, ActivationCode = user.Authenticaiton.ActivationCode };
 
                 if (cacheResult.Success)
                 {

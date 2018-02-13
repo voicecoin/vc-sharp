@@ -57,8 +57,8 @@ namespace Voicecoin.RestApi
         [HttpGet("ContributionStat")]
         public Object GetContributionStat()
         {
-            string userId = GetCurrentUser().Id;
-            var contribution = new ContributionCore(GetCurrentUser().Id, dc, Database.Configuration);
+            string userId = CurrentUserId;
+            var contribution = new ContributionCore(CurrentUserId, dc, Database.Configuration);
             var addresses = dc.Table<ContributionTransaction>().Where(x => x.UserId == userId).ToList();
 
             var pairs = new MarketCore(dc, Database.Configuration).GetUsdPrices();
@@ -95,8 +95,8 @@ namespace Voicecoin.RestApi
         [HttpGet("addresses")]
         public Object GetPayableAddresses()
         {
-            string userId = GetCurrentUser().Id;
-            var contribution = new ContributionCore(GetCurrentUser().Id, dc, Database.Configuration);
+            string userId = CurrentUserId;
+            var contribution = new ContributionCore(CurrentUserId, dc, Database.Configuration);
             var addresses = dc.Table<ContributionTransaction>().Where(x => x.UserId == userId).ToList();
 
             var pairs = new MarketCore(dc, Database.Configuration).GetUsdPrices();
@@ -125,7 +125,7 @@ namespace Voicecoin.RestApi
             var couponCore = new CouponCore(dc, Database.Configuration);
             var coupon = couponCore.GetCouponByCode(contribution.CouponCode);
 
-            var contributionCore = new ContributionCore(GetCurrentUser().Id, dc, Database.Configuration);
+            var contributionCore = new ContributionCore(CurrentUserId, dc, Database.Configuration);
             String address = contributionCore.GetAddress(currency);
 
             var marketCore = new MarketCore(dc, Database.Configuration);
@@ -141,7 +141,7 @@ namespace Voicecoin.RestApi
                 UsdPrice = pairs.Find(x => x.Base == contribution.Currency && x.Currency == CurrencyType.USD).Amount,
                 CouponId = coupon?.Id,
                 Currency = contribution.Currency,
-                UserId = GetCurrentUser().Id,
+                UserId = CurrentUserId,
                 TokenUsdPrice = pairs.Find(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.USD).Amount,
                 Status = ContributionStatus.Unfullfilled
             };
@@ -155,7 +155,7 @@ namespace Voicecoin.RestApi
         public IEnumerable<ContributionTransaction> Purchases()
         {
             return dc.Table<ContributionTransaction>()
-                .Where(x => x.UserId == GetCurrentUser().Id)
+                .Where(x => x.UserId == CurrentUserId)
                 .OrderByDescending(x => x.UpdatedTime)
                 .Take(100);
         }

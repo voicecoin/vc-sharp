@@ -29,7 +29,7 @@ namespace Voicecoin.WebStarter
                 })
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
-                .UseUrls("http://localhost:9000")
+                .UseUrls("http://localhost:9900")
                 .Build();
     }
 }

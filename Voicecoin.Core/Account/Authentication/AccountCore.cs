@@ -77,7 +77,7 @@ namespace Voicecoin.Core.Account
             var ses = new AwsSesHelper(config);
             string emailId = await ses.Send(model, config);
 
-            $"Created user {user.Email}, user id: {user.Id}, sent email: {emailId}.".Log(CfLogLevel.INFO);
+            $"Created user {user.Email}, user id: {user.Id}, sent email: {emailId}.".Log(LogLevel.INFO);
         }
 
         public void RecoverPassword(string email)

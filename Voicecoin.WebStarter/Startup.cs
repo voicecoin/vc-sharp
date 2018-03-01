@@ -72,10 +72,8 @@ namespace Voicecoin.WebStarter
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.EnabledValidator();
-                c.SupportedSubmitMethods(new[] { "get", "post", "put", "patch", "delete" });
-                c.ShowRequestHeaders();
-                c.ShowJsonEditor();
+                c.SupportedSubmitMethods(SubmitMethod.Get, SubmitMethod.Post, SubmitMethod.Put, SubmitMethod.Patch, SubmitMethod.Delete);
+                c.ShowExtensions();
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
                 c.RoutePrefix = "api";
             });

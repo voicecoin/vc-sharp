@@ -49,8 +49,8 @@ namespace Voicecoin.RestApi
         {
             return new List<Object>
             {
-                new { Symbol = CurrencyType.BTC, Name = "Bitcoin" },
-                new { Symbol = CurrencyType.ETH, Name = "Ethereum" }
+                //new { Symbol = "BTC", Name = "Bitcoin" },
+                new { Symbol = "ETH", Name = "Ethereum" }
             };
         }
 
@@ -59,15 +59,15 @@ namespace Voicecoin.RestApi
         {
             string userId = CurrentUserId;
             var contribution = new ContributionCore(CurrentUserId, dc, Database.Configuration);
-            var addresses = dc.Table<ContributionTransaction>().Where(x => x.UserId == userId).ToList();
+            var addresses = dc.Table<WalletAddress>().Where(x => x.UserId == userId).ToList();
 
             var pairs = new MarketCore(dc, Database.Configuration).GetUsdPrices();
 
-            var btcAmount = addresses.FirstOrDefault(x => x.Currency == CurrencyType.BTC)?.Amount;
-            var ethAmount = addresses.FirstOrDefault(x => x.Currency == CurrencyType.ETH)?.Amount;
+            var btcAmount = 0; // addresses.FirstOrDefault(x => x.Currency == "BTC")?.Amount;
+            var ethAmount = 0; // addresses.FirstOrDefault(x => x.Currency == "ETH")?.Amount;
 
-            var btcAmountUsd = btcAmount * pairs.First(x => x.Base == CurrencyType.BTC && x.Currency == CurrencyType.USD).Amount;
-            var ethAmountUsd = ethAmount * pairs.First(x => x.Base == CurrencyType.ETH && x.Currency == CurrencyType.USD).Amount;
+            var btcAmountUsd = btcAmount * pairs.First(x => x.Base == "BTC" && x.Currency == "USD").Amount;
+            var ethAmountUsd = ethAmount * pairs.First(x => x.Base == "ETH" && x.Currency == "USD").Amount;
 
             return new
             {
@@ -75,14 +75,14 @@ namespace Voicecoin.RestApi
                 {
                     new
                     {
-                        Currency = CurrencyType.BTC,
+                        Currency = "BTC",
                         Amount = btcAmount,
                         AmountUsd = btcAmountUsd
                     },
 
                     new
                     {
-                        Currency = CurrencyType.ETH,
+                        Currency = "ETH",
                         Amount = ethAmount,
                         AmountUsd = ethAmountUsd
                     }
@@ -97,7 +97,7 @@ namespace Voicecoin.RestApi
         {
             string userId = CurrentUserId;
             var contribution = new ContributionCore(CurrentUserId, dc, Database.Configuration);
-            var addresses = dc.Table<ContributionTransaction>().Where(x => x.UserId == userId).ToList();
+            var addresses = dc.Table<WalletAddress>().Where(x => x.UserId == userId).ToList();
 
             var pairs = new MarketCore(dc, Database.Configuration).GetUsdPrices();
 
@@ -105,21 +105,21 @@ namespace Voicecoin.RestApi
             {
                 new
                 {
-                    Currency = CurrencyType.BTC.ToString(),
-                    addresses.FirstOrDefault(x => x.Currency == CurrencyType.BTC)?.Address,
-                    Rate = pairs.First(x => x.Base == CurrencyType.BTC).Amount
+                    Currency = "BTC",
+                    addresses.FirstOrDefault(x => x.Currency == "BTC")?.Address,
+                    Rate = pairs.First(x => x.Base == "BTC").Amount
                 },
                 new
                 {
-                    Currency = CurrencyType.ETH.ToString(),
-                    addresses.FirstOrDefault(x => x.Currency == CurrencyType.ETH)?.Address,
-                    Rate = pairs.First(x => x.Base == CurrencyType.ETH).Amount
+                    Currency = "ETH",
+                    addresses.FirstOrDefault(x => x.Currency == "ETH")?.Address,
+                    Rate = pairs.First(x => x.Base == "ETH").Amount
                 }
             };
         }
 
         [HttpPost("purchase/{currency}")]
-        public ContributionTransaction Purchase([FromRoute] CurrencyType currency, [FromBody] VmContribution contribution)
+        public Transaction Purchase([FromRoute] String currency, [FromBody] VmContribution contribution)
         {
             // check wether coupon applied
             var couponCore = new CouponCore(dc, Database.Configuration);
@@ -131,33 +131,30 @@ namespace Voicecoin.RestApi
             var marketCore = new MarketCore(dc, Database.Configuration);
             var pairs = marketCore.GetUsdPrices();
             pairs = marketCore.ApplyCoupon(pairs, contribution.CouponCode);
-            var pricePair = MarketCore.GetPricePair(CurrencyType.VC, contribution.Currency, pairs);
+            var pricePair = MarketCore.GetPricePair(IdConstants.TokenSymbol, contribution.Currency, pairs);
 
-            var transaction = new ContributionTransaction
+            var transaction = new Transaction
             {
-                Address = address,
+                ToAddress = address,
                 TokenAmount = contribution.TokenAmount,
                 Amount = contribution.TokenAmount * pricePair.Amount,
-                UsdPrice = pairs.Find(x => x.Base == contribution.Currency && x.Currency == CurrencyType.USD).Amount,
                 CouponId = coupon?.Id,
-                Currency = contribution.Currency,
-                UserId = CurrentUserId,
-                TokenUsdPrice = pairs.Find(x => x.Base == CurrencyType.VC && x.Currency == CurrencyType.USD).Amount,
                 Status = ContributionStatus.Unfullfilled
             };
 
-            dc.DbTran(() => dc.Table<ContributionTransaction>().Add(transaction));
+            // dc.DbTran(() => dc.Table<Transaction>().Add(transaction));
 
             return transaction;
         }
 
         [HttpGet("purchases")]
-        public IEnumerable<ContributionTransaction> Purchases()
+        public IEnumerable<Transaction> Purchases()
         {
-            return dc.Table<ContributionTransaction>()
-                .Where(x => x.UserId == CurrentUserId)
-                .OrderByDescending(x => x.UpdatedTime)
-                .Take(100);
+            var query = from wa in dc.Table<WalletAddress>()
+                        join t in dc.Table<Transaction>() on wa.Address equals t.ToAddress
+                        select t;
+
+            return query.ToList();
         }
     }
 }

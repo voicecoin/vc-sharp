@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Voicecoin.Core.Ico;
 
 namespace Voicecoin.Core
 {
@@ -28,21 +29,22 @@ namespace Voicecoin.Core
         /// </summary>
         /// <param name="currency">BTC</param>
         /// <returns></returns>
-        public String GetAddress(CurrencyType currency)
+        public String GetAddress(String currency)
         {
             // check if address exist
             //var accounts = coinbase.GetAccounts();
             //var account = accounts.Data.FirstOrDefault(x => x.Currency.Code == currency.ToString());
             // For Debug
             //var addr = coinbase.CreateAddress(account.Id);
-            var newAddress = new ContributionTransaction
+            /*var newAddress = new Transaction
             {
-                UserId = userId,
-                Currency = currency,
-                Address = "1Gt9VsPK3oQS6qmPLNNSamvRaQt9pMth94" //addr.Address
-            };
+                FromAddress = "1Gt9VsPK3oQS6qmPLNNSamvRaQt9pMth94" //addr.Address
+            };*/
 
-            return newAddress.Address;
+            var wallet = dc.Table<WalletAddress>()
+                .FirstOrDefault(x => x.UserId == userId && x.Currency == currency);
+
+            return wallet?.Address;
         }
     }
 }

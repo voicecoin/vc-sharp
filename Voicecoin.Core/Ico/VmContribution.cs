@@ -7,7 +7,7 @@ namespace Voicecoin.Core
 {
     public class VmContribution
     {
-        public CurrencyType Currency { get; set; }
+        public string Currency { get; set; }
 
         public decimal TokenAmount { get; set; }
 

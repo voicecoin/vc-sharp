@@ -109,7 +109,7 @@ namespace Voicecoin.Core
             });*/
         }
 
-        private void AddTransaction(string contributionId, decimal amount, string transaction, CurrencyType currency, List<PricePairModel> pricePairs)
+        private void AddTransaction(string contributionId, decimal amount, string transaction, string currency, List<PricePairModel> pricePairs)
         {
             /*var coin2Token = MarketCore.GetPricePair(currency, CurrencyType.VC, pricePairs);
             var coin2Usd = pricePairs.First(x => x.Base == currency && x.Currency == CurrencyType.USD);

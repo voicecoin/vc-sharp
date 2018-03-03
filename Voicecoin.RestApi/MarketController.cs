@@ -28,19 +28,39 @@ namespace Voicecoin.RestApi
             }
 
             var result = new List<Object>();
-            result.Add(new
+            /*result.Add(new
             {
-                Name = CurrencyType.BTC,
-                V2c = Math.Round(MarketCore.GetPricePair(CurrencyType.VC, CurrencyType.BTC, pairs).Amount, 8),
-                C2v = Math.Round(MarketCore.GetPricePair(CurrencyType.BTC, CurrencyType.VC, pairs).Amount, 8)
-            });
+                Name = "BTC",
+                V2c = Math.Round(MarketCore.GetPricePair(IdConstants.TokenSymbol, "BTC", pairs).Amount, 8),
+                C2v = Math.Round(MarketCore.GetPricePair("BTC", IdConstants.TokenSymbol, pairs).Amount, 8)
+            });*/
 
-            result.Add(new
+            string tokenBaseCurrency = pairs.First(x => x.Base == IdConstants.TokenSymbol).Currency;
+
+            if (tokenBaseCurrency == "USD")
             {
-                Name = CurrencyType.ETH,
-                V2c = Math.Round(MarketCore.GetPricePair(CurrencyType.VC, CurrencyType.ETH, pairs).Amount, 8),
-                C2v = Math.Round(MarketCore.GetPricePair(CurrencyType.ETH, CurrencyType.VC, pairs).Amount, 8)
-            });
+                result.Add(new
+                {
+                    Name = "ETH",
+                    V2c = Math.Round(MarketCore.GetPricePair(IdConstants.TokenSymbol, "ETH", pairs).Amount, 8),
+                    C2v = Math.Round(MarketCore.GetPricePair("ETH", IdConstants.TokenSymbol, pairs).Amount, 8)
+                });
+            }
+            else if (tokenBaseCurrency == "ETH")
+            {
+                // var ico = new IcoCore(dc);
+                // var stat = ico.GetIcoStat();
+
+                var p = pairs.First(x => x.Base == IdConstants.TokenSymbol && x.Currency == "ETH");
+
+                result.Add(new
+                {
+                    Name = "ETH",
+                    V2c = Math.Round(p.Amount, 8),
+                    C2v = Math.Round(1 / p.Amount, 8)
+                });
+            }
+
 
             return result;
         }

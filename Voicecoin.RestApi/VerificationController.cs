@@ -64,9 +64,17 @@ namespace Voicecoin.RestApi
             var personal = new UserPersonalCore(dc, CurrentUserId);
             var user = personal.GetPersonalInfo();
 
-            return new VmPersonalInfomation
+            var pi = new VmPersonalInfomation
             {
-                Address = new VmUserAddress
+                Birthday = user.Birthday,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Nationality = user.Nationality
+            };
+
+            if (user.Address != null)
+            {
+                pi.Address = new VmUserAddress
                 {
                     AddressLine1 = user.Address.AddressLine1,
                     AddressLine2 = user.Address.AddressLine2,
@@ -75,12 +83,15 @@ namespace Voicecoin.RestApi
                     County = user.Address.County,
                     State = user.Address.State,
                     Zipcode = user.Address.Zipcode
-                },
-                Birthday = user.Birthday,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Nationality = user.Nationality
-            };
+                };
+            }
+            else
+            {
+
+                pi.Address = new VmUserAddress();
+            }
+
+            return pi;
         }
 
         [HttpPost("PersonalInformation")]
@@ -157,7 +168,7 @@ namespace Voicecoin.RestApi
         }
 
         [HttpPost("IdentificationVerification")]
-        public async Task<IActionResult> UploadIdentificationVerification(VmIdentificationVerification model)
+        public IActionResult UploadIdentificationVerification(VmIdentificationVerification model)
         {
             var userId = CurrentUserId;
 

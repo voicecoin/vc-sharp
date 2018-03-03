@@ -17,7 +17,7 @@ namespace Voicecoin.Core
         /// <summary>
         /// Target Currency
         /// </summary>
-        public CurrencyType Currency { get; set; }
+        public string Currency { get; set; }
 
         /// <summary>
         /// 1 base = 10 Amount Symbol
@@ -31,7 +31,7 @@ namespace Voicecoin.Core
         /// </summary>
         [Required]
         [MaxLength(8)]
-        public CurrencyType Symbol { get; set; }
+        public string Symbol { get; set; }
 
         /// <summary>
         /// Start date of the Status

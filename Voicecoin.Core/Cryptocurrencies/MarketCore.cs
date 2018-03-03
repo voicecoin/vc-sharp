@@ -37,19 +37,19 @@ namespace Voicecoin.Core
             // BTC - USD
             pricePairs.Add(new PricePairModel
             {
-                Base = CurrencyType.BTC,
-                Currency = CurrencyType.USD,
+                Base = "BTC",
+                Currency = "USD",
                 Amount = btcUsd.Amount,
-                Pair = $"{CurrencyType.BTC}-{CurrencyType.USD}"
+                Pair = $"BTC-USD"
             });
 
             // ETH - USD
             pricePairs.Add(new PricePairModel
             {
-                Base = CurrencyType.ETH,
-                Currency = CurrencyType.USD,
+                Base = "ETH",
+                Currency = "USD",
                 Amount = ethUsd.Amount,
-                Pair = $"{CurrencyType.ETH}-{CurrencyType.USD}"
+                Pair = $"ETH-USD"
             });
 
 
@@ -57,10 +57,10 @@ namespace Voicecoin.Core
             var ico = new IcoCore(dc).GetIcoStat();
             pricePairs.Add(new PricePairModel
             {
-                Base = CurrencyType.VC,
+                Base = IdConstants.TokenSymbol,
                 Amount = ico.Price.Amount,
                 Currency = ico.Price.Currency,
-                Pair = $"{CurrencyType.VC}-{ico.Price.Currency}"
+                Pair = $"{IdConstants.TokenSymbol}-{ico.Price.Currency}"
             });
 
             return pricePairs;
@@ -74,24 +74,42 @@ namespace Voicecoin.Core
             var coupon = couponCore.GetCouponByCode(couponCode);
             if(coupon != null)
             {
-                pricePairs.First(x => x.Base == CurrencyType.VC).Amount = coupon.Amount;
+                var p = pricePairs.First(x => x.Base == "VC");
+
+                if (coupon.PercentageOff > 0)
+                {
+                    p.Amount = p.Amount * (1 - coupon.PercentageOff);
+                }
+                else
+                {
+                    p.Amount = coupon.Amount;
+                }
             }
 
             return pricePairs;
         }
 
-        public static PricePairModel GetPricePair(CurrencyType baseCurrency, CurrencyType targetCurrency, List<PricePairModel> usdPrices)
+        public static PricePairModel GetPricePair(string baseCurrency, string targetCurrency, List<PricePairModel> usdPrices)
         {
-            var bc = usdPrices.First(x => x.Base == baseCurrency);
-            var tc = usdPrices.First(x => x.Base == targetCurrency);
-
-            return new PricePairModel
+            var token2Coin = usdPrices.FirstOrDefault(x => x.Base == baseCurrency && x.Currency == targetCurrency);
+            if (token2Coin != null)
             {
-                Base = baseCurrency,
-                Currency = targetCurrency,
-                Amount = bc.Amount / tc.Amount,
-                Pair = $"{baseCurrency}-{targetCurrency}"
-            };
+                return token2Coin;
+            }
+            else
+            {
+                var bc = usdPrices.First(x => x.Base == baseCurrency);
+                var tc = usdPrices.First(x => x.Base == targetCurrency);
+
+                return new PricePairModel
+                {
+                    Base = baseCurrency,
+                    Currency = targetCurrency,
+                    Amount = bc.Amount / tc.Amount,
+                    Pair = $"{baseCurrency}-{targetCurrency}"
+                };
+            }
+
         }
 
         /*

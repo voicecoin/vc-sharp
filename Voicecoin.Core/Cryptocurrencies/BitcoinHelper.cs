@@ -22,6 +22,6 @@ namespace Voicecoin.Core
 
             var result = JsonConvert.DeserializeObject<JObject>(response.Content);
 
-            return new BalanceModel { Amount = result["total_received"].ToObject<Decimal>() / 100000000, Currency = CurrencyType.BTC };
+            return new BalanceModel { Amount = result["total_received"].ToObject<Decimal>() / 100000000, Currency = "BTC" };
         }
     }}

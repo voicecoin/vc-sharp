@@ -13,7 +13,7 @@ namespace Voicecoin.Core
     {
         [Required]
         [MaxLength(16)]
-        public CurrencyType Symbol { get; set; }
+        public String Symbol { get; set; }
 
         [Required]
         [MaxLength(64)]

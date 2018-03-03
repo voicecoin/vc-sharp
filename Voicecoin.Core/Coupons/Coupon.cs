@@ -22,7 +22,7 @@ namespace Voicecoin.Core.Coupons
         [Column(TypeName = "Money")]
         public Decimal Amount { get; set; }
 
-        public CurrencyType Currency { get; set; }
+        public String Currency { get; set; }
 
         public BalanceModel Price
         {

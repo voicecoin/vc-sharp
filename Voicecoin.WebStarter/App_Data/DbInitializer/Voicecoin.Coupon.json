@@ -1,10 +1,11 @@
 ﻿[
   {
-    "code": "3CENTS",
-    "description": "3-CENTS",
+    "code": "10POFF",
+    "description": "10 PERCENT OFF",
     "amount": 0.03,
-    "currency": "USD",
-    "startDate": "2018-01-01",
-    "endDate": "2018-02-14"
+    "currency": "VC",
+    "percent": 0.1,
+    "startDate": "2018-03-01",
+    "endDate": "2018-03-14"
   }
 ]

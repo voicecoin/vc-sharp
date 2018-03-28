@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using RazorLight;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Voicecoin.Core.Permission;
@@ -47,15 +48,13 @@ namespace Voicecoin.Core.Account
             model.Subject = config.GetSection("UserActivationEmail:Subject").Value;
             model.ToAddresses = user.Email;
             model.Template = config.GetSection("UserActivationEmail:Template").Value;
-            model.Bcc = config.GetSection("UserActivationEmail:Bcc").Value;
-            model.Cc = config.GetSection("UserActivationEmail:Cc").Value;
 
             if (!String.IsNullOrEmpty(model.Template))
             {
                 if (engine == null)
                 {
                     engine = new RazorLightEngineBuilder()
-                      .UseFilesystemProject(Database.ContentRootPath + "\\App_Data")
+                      .UseFilesystemProject(Database.ContentRootPath + $"{Path.DirectorySeparatorChar}App_Data")
                       .UseMemoryCachingProvider()
                       .Build();
                 }
@@ -66,7 +65,7 @@ namespace Voicecoin.Core.Account
 
                 if (cacheResult.Success)
                 {
-                    model.Body = await engine.CompileRenderAsync(model.Template, emailModel);
+                    model.Body = await engine.RenderTemplateAsync(cacheResult.Template.TemplatePageFactory(), emailModel);
                 }
                 else
                 {

@@ -19,48 +19,40 @@ namespace Voicecoin.RestApi
         [HttpGet("prices")]
         public List<Object> GetPricePairs([FromQuery] string coupon)
         {
-            var marketCore = new MarketCore(dc, Database.Configuration);
-            var pairs = marketCore.GetUsdPrices();
+            var prices = dc.Table<TokenPrice>().Where(x => x.StartDate >= DateTime.UtcNow)
+                .ToList();
 
-            if (!String.IsNullOrEmpty(coupon))
-            {
-                pairs = marketCore.ApplyCoupon(pairs, coupon);
-            }
+            var pairs = new List<PricePairModel>();
+
+            prices.ForEach(price => {
+
+                pairs.Add(new PricePairModel
+                {
+                    Pair = $"{price.Currency}-{price.Symbol}",
+                    Base = price.Currency,
+                    Currency = price.Symbol,
+                    Amount = Math.Round(price.Amount, 8)
+                });
+
+                pairs.Add(new PricePairModel
+                {
+                    Pair = $"{price.Symbol}-{price.Currency}",
+                    Base = price.Symbol,
+                    Currency = price.Currency,
+                    Amount = Math.Round(1 / price.Amount, 8)
+                });
+            });
 
             var result = new List<Object>();
-            /*result.Add(new
-            {
-                Name = "BTC",
-                V2c = Math.Round(MarketCore.GetPricePair(IdConstants.TokenSymbol, "BTC", pairs).Amount, 8),
-                C2v = Math.Round(MarketCore.GetPricePair("BTC", IdConstants.TokenSymbol, pairs).Amount, 8)
-            });*/
 
-            string tokenBaseCurrency = pairs.First(x => x.Base == IdConstants.TokenSymbol).Currency;
-
-            if (tokenBaseCurrency == "USD")
-            {
+            prices.ForEach(price => {
                 result.Add(new
                 {
-                    Name = "ETH",
-                    V2c = Math.Round(MarketCore.GetPricePair(IdConstants.TokenSymbol, "ETH", pairs).Amount, 8),
-                    C2v = Math.Round(MarketCore.GetPricePair("ETH", IdConstants.TokenSymbol, pairs).Amount, 8)
+                    Name = price.Currency,
+                    V2c = pairs.First(x => x.Base == IdConstants.TokenSymbol && x.Currency == price.Currency).Amount,
+                    C2v = pairs.First(x => x.Base == price.Currency && x.Currency == IdConstants.TokenSymbol).Amount
                 });
-            }
-            else if (tokenBaseCurrency == "ETH")
-            {
-                // var ico = new IcoCore(dc);
-                // var stat = ico.GetIcoStat();
-
-                var p = pairs.First(x => x.Base == IdConstants.TokenSymbol && x.Currency == "ETH");
-
-                result.Add(new
-                {
-                    Name = "ETH",
-                    V2c = Math.Round(p.Amount, 8),
-                    C2v = Math.Round(1 / p.Amount, 8)
-                });
-            }
-
+            });
 
             return result;
         }

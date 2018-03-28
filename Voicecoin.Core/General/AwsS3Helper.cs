@@ -57,6 +57,34 @@ namespace Voicecoin.Core
             }
         }
 
+        public async Task<bool> ValidateFileSizeFromS3(string subDirectoryInBucket, string path, long size)
+        {
+            AmazonS3Client client = GetAwsS3Client();
+            var buckets = client.ListBucketsAsync();
+
+            string bucketName = GetS3BucketName();
+            GetObjectRequest request = new GetObjectRequest
+            {
+                BucketName = bucketName,
+                Key = path
+            };
+
+            if (subDirectoryInBucket == "" || subDirectoryInBucket == null)
+            {
+                request.BucketName = bucketName; //no subdirectory just bucket name
+            }
+            else
+            {   // subdirectory and bucket name
+                request.BucketName = bucketName + @"/" + subDirectoryInBucket;
+            }
+
+            using (GetObjectResponse response = await client.GetObjectAsync(request))
+            using (Stream responseStream = response.ResponseStream)
+            {
+                return response.ContentLength == size;
+            }
+        }
+
         public bool SaveFileToS3(string localFilePath, string subDirectoryInBucket, string fileNameInS3)
         {
             // input explained :

@@ -17,7 +17,8 @@ namespace Voicecoin.Core
         public void Load(IConfiguration config, Database dc)
         {
             InitCurrency(config, dc);
-            InitPriceStage(config, dc);
+            InitTokenPrice(config, dc);
+            InitReceiveAddress(config, dc);
             InitCoupon(config, dc);
             InitCommonDataCountry(config, dc);
             InitCommonDataUsStates(config, dc);
@@ -27,24 +28,43 @@ namespace Voicecoin.Core
         {
             if (dc.Table<Cryptocurrency>().Any()) return;
 
-            string json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Voicecoin.Cryptocurrency.json");
+            string json = File.ReadAllText(Database.ContentRootPath + $"{Path.DirectorySeparatorChar}App_Data{Path.DirectorySeparatorChar}DbInitializer{Path.DirectorySeparatorChar}Voicecoin.Cryptocurrency.json");
             var cryptocurrency = JsonConvert.DeserializeObject<Cryptocurrency>(json);
             dc.Table<Cryptocurrency>().Add(cryptocurrency);
         }
 
-        private void InitPriceStage(IConfiguration config, Database dc)
+        private void InitTokenPrice(IConfiguration config, Database dc)
         {
-            if (dc.Table<PriceStage>().Any()) return;
+            if (dc.Table<TokenPrice>().Any()) return;
 
-            string json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Voicecoin.PriceStage.json");
-            var icoinfos = JsonConvert.DeserializeObject<List<PriceStage>>(json);
-            dc.Table<PriceStage>().AddRange(icoinfos);
+            string json = File.ReadAllText(Database.ContentRootPath + $"{Path.DirectorySeparatorChar}App_Data{Path.DirectorySeparatorChar}DbInitializer{Path.DirectorySeparatorChar}Voicecoin.TokenPrice.json");
+            var icoinfos = JsonConvert.DeserializeObject<List<TokenPrice>>(json);
+            dc.Table<TokenPrice>().AddRange(icoinfos);
+        }
+
+        private void InitReceiveAddress(IConfiguration config, Database dc)
+        {
+            if (dc.Table<TokenWalletAddress>().Any()) return;
+
+            dc.Table<TokenWalletAddress>().Add(new TokenWalletAddress
+            {
+                UserId = IdConstants.RootAccountId,
+                Address = "0x7eb040bD9b4C2aE6c0E7D8abF75c17dA93A70990",
+                Currency = "ETH"
+            });
+
+            dc.Table<TokenWalletAddress>().Add(new TokenWalletAddress
+            {
+                UserId = IdConstants.RootAccountId,
+                Address = "3EvJEoembUezSzafphNCoHerT4DrBziUAU",
+                Currency = "BTC"
+            });
         }
 
         private void InitCoupon(IConfiguration config, Database dc)
         {
             if (dc.Table<Coupon>().Any()) return;
-            string json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Voicecoin.Coupon.json");
+            string json = File.ReadAllText(Database.ContentRootPath + $"{Path.DirectorySeparatorChar}App_Data{Path.DirectorySeparatorChar}DbInitializer{Path.DirectorySeparatorChar}Voicecoin.Coupon.json");
             var coupnons = JsonConvert.DeserializeObject<List<Coupon>>(json);
             dc.Table<Coupon>().AddRange(coupnons);
         }
@@ -59,7 +79,7 @@ namespace Voicecoin.Core
         {
             if (dc.Table<Country>().Any()) return;
 
-            string json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Common.Countries.json");
+            string json = File.ReadAllText(Database.ContentRootPath + $"{Path.DirectorySeparatorChar}App_Data{Path.DirectorySeparatorChar}DbInitializer{Path.DirectorySeparatorChar}Common.Countries.json");
             var countries = JsonConvert.DeserializeObject<List<JObject>>(json);
 
             countries.ForEach(country => {
@@ -77,7 +97,7 @@ namespace Voicecoin.Core
         {
             if (dc.Table<State>().Any()) return;
 
-            string json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Common.States-US.json");
+            string json = File.ReadAllText(Database.ContentRootPath + $"{Path.DirectorySeparatorChar}App_Data{Path.DirectorySeparatorChar}DbInitializer{Path.DirectorySeparatorChar}Common.States-US.json");
             var states = JsonConvert.DeserializeObject<List<JObject>>(json);
 
             states.ForEach(state => {
@@ -89,7 +109,7 @@ namespace Voicecoin.Core
                 });
             });
 
-            json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Common.States-CN.json");
+            json = File.ReadAllText(Database.ContentRootPath + $"{Path.DirectorySeparatorChar}App_Data{Path.DirectorySeparatorChar}DbInitializer{Path.DirectorySeparatorChar}Common.States-CN.json");
             states = JsonConvert.DeserializeObject<List<JObject>>(json);
 
             states.ForEach(state => {

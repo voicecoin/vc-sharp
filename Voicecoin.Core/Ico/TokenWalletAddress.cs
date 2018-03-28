@@ -5,9 +5,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Voicecoin.Core.Ico
+namespace Voicecoin.Core
 {
-    public class WalletAddress : DbRecord, IDbRecord
+    /// <summary>
+    /// System use this address to receive coin, different address per user
+    /// </summary>
+    public class TokenWalletAddress : DbRecord, IDbRecord
     {
         [StringLength(36)]
         public String UserId { get; set; }

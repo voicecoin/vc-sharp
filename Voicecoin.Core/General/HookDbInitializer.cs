@@ -22,7 +22,7 @@ namespace Voicecoin.Core.General
         {
             if (dc.Table<Taxonomy>().Any(x => x.Id == "ee3ccd84-cff1-4701-8c61-9f9d88a6e03e")) return;
 
-            string json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Common.IdDocumentType.json");
+            string json = File.ReadAllText(Database.ContentRootPath + $"{Path.DirectorySeparatorChar}App_Data{Path.DirectorySeparatorChar}DbInitializer{Path.DirectorySeparatorChar}Common.IdDocumentType.json");
             var taxonomy = JsonConvert.DeserializeObject<TaxonomyLoadModel>(json);
 
             dc.Table<Taxonomy>().Add(new Taxonomy

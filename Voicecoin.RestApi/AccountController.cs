@@ -63,7 +63,7 @@ namespace Voicecoin.RestApi
             var user = (from usr in dc.Table<User>()
                        join auth in dc.Table<UserAuth>() on usr.Id equals auth.UserId
                        where usr.UserName == userModel.UserName
-                       select auth).First();
+                       select auth).FirstOrDefault();
 
             if (user != null)
             {

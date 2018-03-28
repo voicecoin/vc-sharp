@@ -17,14 +17,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="App_Data\DbInitializer\Voicecoin.Cryptocurrency.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="App_Data\ip2region.db" />
     <None Remove="App_Data\Voicecoin.db" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="2.2.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="2.2.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="2.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="2.3.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="2.3.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>

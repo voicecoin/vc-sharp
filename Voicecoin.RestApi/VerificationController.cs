@@ -2,6 +2,7 @@
 using EntityFrameworkCore.BootKit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using shortid;
@@ -155,24 +156,43 @@ namespace Voicecoin.RestApi
         }
 
         [HttpGet("IdentificationVerification")]
-        public VmIdentificationVerification GetIdentificationVerification()
+        public Object GetIdentificationVerification()
         {
             var identification = dc.Table<UserIdentification>().FirstOrDefault(x => x.UserId == CurrentUserId);
-            return new VmIdentificationVerification
+
+            var frontSidePhoto = (from us in dc.Table<UserDocument>()
+                                  join fs in dc.Table<FileStorage>() on us.FileStorageId equals fs.Id
+                                  where us.UserId == CurrentUserId && us.Tag == "FrontSidePhotoId"
+                                  orderby us.UpdatedTime descending
+                                  select new { Name = fs.OriginalFileName, fs.Size }).FirstOrDefault();
+
+            var backSidePhoto = (from us in dc.Table<UserDocument>()
+                                  join fs in dc.Table<FileStorage>() on us.FileStorageId equals fs.Id
+                                  where us.UserId == CurrentUserId && us.Tag == "BackSidePhotoId"
+                                  orderby us.UpdatedTime descending
+                                  select new { Name = fs.OriginalFileName, fs.Size }).FirstOrDefault();
+
+            return new
             {
                 DocumentNumber = identification?.DocumentNumber,
                 DocumentTypeId = identification?.DocumentTypeId,
                 ExpiryDate = identification?.ExpiryDate,
-                IssueDate = identification?.IssueDate 
+                IssueDate = identification?.IssueDate,
+                FrontSidePhoto = new { frontSidePhoto.Name, frontSidePhoto.Size },
+                BackSidePhoto = new { backSidePhoto.Name, backSidePhoto.Size }
             };
         }
 
         [HttpPost("IdentificationVerification")]
-        public IActionResult UploadIdentificationVerification(VmIdentificationVerification model)
+        public async Task<IActionResult> UploadIdentificationVerification(VmIdentificationVerification model)
         {
             var userId = CurrentUserId;
 
-            dc.DbTran(async () =>
+            var storage = new FileStorageCore(dc, userId);
+            var frontSidePhoto = await storage.Save(model.FrontSidePhoto);
+            var backSidePhoto = await storage.Save(model.BackSidePhoto);
+
+            dc.DbTran(() =>
             {
                 var identification = dc.Table<UserIdentification>().FirstOrDefault(x => x.UserId == CurrentUserId);
                 if (identification == null)
@@ -194,31 +214,25 @@ namespace Voicecoin.RestApi
                     identification.ExpiryDate = model.ExpiryDate;
                 }
 
-                if (model.FrontSidePhoto != null && model.FrontSidePhoto.Length > 0)
+                if (!String.IsNullOrEmpty(frontSidePhoto))
                 {
-                    var storage = new FileStorageCore(dc, userId);
-                    var storageId = await storage.Save(model.FrontSidePhoto);
-
                     var doc = new UserDocument
                     {
                         UserId = userId,
                         Tag = "FrontSidePhotoId",
-                        FileStorageId = storageId
+                        FileStorageId = frontSidePhoto
                     };
 
                     dc.Table<UserDocument>().Add(doc);
                 }
 
-                if (model.BackSidePhoto != null && model.BackSidePhoto.Length > 0)
+                if (!String.IsNullOrEmpty(backSidePhoto))
                 {
-                    var storage = new FileStorageCore(dc, userId);
-                    var storageId = await storage.Save(model.BackSidePhoto);
-
                     var doc = new UserDocument
                     {
                         UserId = userId,
                         Tag = "BackSidePhotoId",
-                        FileStorageId = storageId
+                        FileStorageId = backSidePhoto
                     };
 
                     dc.Table<UserDocument>().Add(doc);

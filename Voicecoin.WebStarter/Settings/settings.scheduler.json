@@ -1,6 +1,6 @@
 ﻿{
   "Scheduler": {
-    "Enable": true,
+    "Enable": false,
     "Crons": {
       "ContributionTransactionStatusJob": "0 0/10 * * * ?"
     }

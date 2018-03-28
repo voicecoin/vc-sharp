@@ -1,0 +1,17 @@
+﻿[
+  {
+    "currency": "ETH",
+    "amount": "5500",
+    "symbol": "VC",
+    "startDate": "2018-03-28",
+    "status": 18
+  },
+
+  {
+    "currency": "BTC",
+    "amount": "85000",
+    "symbol": "VC",
+    "startDate": "2018-03-28",
+    "status": 18
+  }
+]

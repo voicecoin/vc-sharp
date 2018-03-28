@@ -22,7 +22,7 @@ namespace Voicecoin.Core.Permission
         {
             if (dc.Table<Role>().Any()) return;
 
-            string json = File.ReadAllText(Database.ContentRootPath + "\\App_Data\\DbInitializer\\Voicecoin.Roles.json");
+            string json = File.ReadAllText(Database.ContentRootPath + $"{Path.DirectorySeparatorChar}App_Data{Path.DirectorySeparatorChar}DbInitializer{Path.DirectorySeparatorChar}Voicecoin.Roles.json");
             var roles = JsonConvert.DeserializeObject<JsonRoles>(json);
             dc.Table<Role>().AddRange(roles.Roles);
         }

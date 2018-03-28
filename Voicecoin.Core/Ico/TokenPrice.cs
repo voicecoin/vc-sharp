@@ -10,24 +10,24 @@ using Voicecoin.Core.Models;
 namespace Voicecoin.Core
 {
     /// <summary>
-    /// Staging infomation
+    /// Currency rate. Format: N Token/ BTC
     /// </summary>
-    public class PriceStage : DbRecord, IDbRecord
+    public class TokenPrice : DbRecord, IDbRecord
     {
         /// <summary>
-        /// Target Currency
+        /// Base Currency
         /// </summary>
         public string Currency { get; set; }
 
         /// <summary>
-        /// 1 base = 10 Amount Symbol
+        /// N Symbol/ Currency
         /// </summary>
         [DataType(DataType.Currency)]
         [Column(TypeName = "Money")]
         public Decimal Amount { get; set; }
 
         /// <summary>
-        /// Base currency
+        /// Token symbol
         /// </summary>
         [Required]
         [MaxLength(8)]

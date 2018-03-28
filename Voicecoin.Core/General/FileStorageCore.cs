@@ -23,6 +23,11 @@ namespace Voicecoin.Core.General
 
         public async Task<string> Save(IFormFile file, string dir = "Documents")
         {
+            if (file == null || file.Length == 0)
+            {
+                return String.Empty;
+            }
+
             var filePath = Path.GetTempFileName();
 
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -37,9 +42,15 @@ namespace Voicecoin.Core.General
 
             var presignedUrl = s3file.GeneratePreSignedURLFromS3(dir, fileName);
 
+            // read file to double check file is uploaded to S3
+            if(!await s3file.ValidateFileSizeFromS3(dir, fileName, file.Length))
+            {
+                throw new Exception("Upload failed, file size exception");
+            }
+
             var storage = new FileStorage
             {
-                OriginalFileName = file.Name,
+                OriginalFileName = file.FileName,
                 ConvertedFileName = fileName,
                 Size = file.Length,
                 ContentType = file.ContentType,
@@ -47,7 +58,9 @@ namespace Voicecoin.Core.General
                 UserId = userId
             };
 
-            dc.Table<FileStorage>().Add(storage);
+            dc.DbTran(() => {
+                dc.Table<FileStorage>().Add(storage);
+            });
 
             return storage.Id;
         }

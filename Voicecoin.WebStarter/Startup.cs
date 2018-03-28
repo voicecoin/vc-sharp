@@ -14,6 +14,7 @@ using Microsoft.Extensions.PlatformAbstractions;
 using System.IO;
 using Voicecoin.Core;
 using DotNetToolkit.JwtHelper;
+using ContentFoundation.RestApi;
 
 namespace Voicecoin.WebStarter
 {
@@ -30,6 +31,7 @@ namespace Voicecoin.WebStarter
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<ApiExceptionFilter>();
             services.AddCors();
             services.AddJwtAuth(Configuration);
 
@@ -85,8 +87,6 @@ namespace Voicecoin.WebStarter
 
             app.UseEntityDbContext(Configuration, env.ContentRootPath, new String[] { "Voicecoin.Core" });
             app.UseInitLoader();
-
-            new ContributionTransactionStatusJob().Execute(null);
         }
 
     }

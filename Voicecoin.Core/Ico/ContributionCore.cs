@@ -41,7 +41,7 @@ namespace Voicecoin.Core
                 FromAddress = "1Gt9VsPK3oQS6qmPLNNSamvRaQt9pMth94" //addr.Address
             };*/
 
-            var wallet = dc.Table<WalletAddress>()
+            var wallet = dc.Table<TokenWalletAddress>()
                 .FirstOrDefault(x => x.UserId == userId && x.Currency == currency);
 
             return wallet?.Address;

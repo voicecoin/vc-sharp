@@ -12,5 +12,7 @@ namespace Voicecoin.Core
         public decimal TokenAmount { get; set; }
 
         public string CouponCode { get; set; }
+
+        public string FromAddress { get; set; }
     }
 }

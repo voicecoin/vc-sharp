@@ -6,10 +6,16 @@ namespace Voicecoin.Core.Models
 {
     public enum CurrencyStatus
     {
-        UpcomingPreIco = 5,
+        UpcomingPreIco = 2,
         
-        ActivePreIco = 10,
+        ActivePreIco = 8,
 
-        ConcludedPreIco = 15
+        ConcludedPreIco = 9,
+
+        UpcomingIco = 12,
+
+        ActiveIco = 18,
+
+        ConcludedIco = 19,
     }
 }

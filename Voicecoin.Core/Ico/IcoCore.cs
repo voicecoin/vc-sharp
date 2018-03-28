@@ -5,6 +5,8 @@ using System.Text;
 using System.Linq;
 using Voicecoin.Core.Models;
 using Coinbase.Models;
+using System.IO;
+using IP2Region;
 
 namespace Voicecoin.Core
 {
@@ -20,7 +22,7 @@ namespace Voicecoin.Core
         public IcoSummaryModel GetIcoStat()
         {
             var ico = (from currency in dc.Table<Cryptocurrency>()
-                       join stage in dc.Table<PriceStage>() on new { currency.Symbol, currency.Status } equals new { stage.Symbol, stage.Status }
+                       join stage in dc.Table<TokenPrice>() on new { currency.Symbol, currency.Status } equals new { stage.Symbol, stage.Status }
                        select new IcoSummaryModel
                        {
                            TotalSupply = currency.TotalSupply,

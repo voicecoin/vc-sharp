@@ -1,5 +1,4 @@
 ﻿using EntityFrameworkCore.BootKit;
-using Microsoft.Data.Sqlite;
 using Quartz;
 using System;
 using System.Collections.Generic;

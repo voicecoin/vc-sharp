@@ -32,5 +32,7 @@ namespace Voicecoin.Core
         public decimal TokenAmount { get; set; }
 
         public ContributionStatus Status { get; set; }
+
+        public String Error { get; set; }
     }
 }

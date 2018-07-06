@@ -22,14 +22,15 @@ namespace Voicecoin.WebStarter
                 .ConfigureAppConfiguration((hostingContext, config) => {
                     
                     var env = hostingContext.HostingEnvironment;
-                    var settings = Directory.GetFiles("Settings", "settings.*.json");
+                    var settings = Directory.GetFiles($"{env.ContentRootPath}{Path.DirectorySeparatorChar}Settings", "settings.*.json");
                     settings.ToList().ForEach(setting => {
                         config.AddJsonFile(setting, optional: false, reloadOnChange: true);
                     });
                 })
+                //.UseIISIntegration()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
-                .UseUrls("http://localhost:9900")
+                .UseUrls("http://0.0.0.0:129")
                 .Build();
     }
 }

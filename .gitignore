@@ -292,3 +292,5 @@ __pycache__/
 /Voicecoin.WebStarter/Settings/settings.auth.json
 /Voicecoin.WebStarter/Settings
 /Voicecoin.WebStarter/App_Data/ip2region.db
+/Voicecoin.WebStarter/wwwroot
+/Voicecoin.WebStarter/PublishOutput

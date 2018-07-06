@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Voicecoin.Core.Loader
+namespace Voicecoin.WebStarter
 {
     public class InitializationLoader
     {
@@ -16,9 +16,20 @@ namespace Voicecoin.Core.Loader
             Console.WriteLine($"*** *** *** *** InitializationLoader running *** *** *** ***");
             Console.WriteLine();
 
-            var coreLoaders = TypeHelper.GetInstanceWithInterface<IInitializationLoader>(Database.Assemblies);
+            var coreLoaders1 = TypeHelper.GetInstanceWithInterface<Voicecoin.Core.Loader.IInitializationLoader>(Database.Assemblies);
 
-            coreLoaders.ForEach(loader =>
+            coreLoaders1.ForEach(loader =>
+            {
+                DateTime start = DateTime.UtcNow;
+                Console.WriteLine($"{loader.ToString()} P:{loader.Priority}...");
+                loader.Initialize();
+                Console.WriteLine($"{loader.ToString()} completed in {(DateTime.UtcNow - start).TotalSeconds} s.");
+                Console.WriteLine();
+            });
+
+            var coreLoaders2 = TypeHelper.GetInstanceWithInterface<Voiceweb.Auth.Core.Initializers.IInitializationLoader>(Database.Assemblies);
+
+            coreLoaders2.ForEach(loader =>
             {
                 DateTime start = DateTime.UtcNow;
                 Console.WriteLine($"{loader.ToString()} P:{loader.Priority}...");

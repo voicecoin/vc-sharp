@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="App_Data\DbInitializer\Voicecoin.Cryptocurrency.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="App_Data\ip2region.db" />
     <None Remove="App_Data\Voicecoin.db" />
   </ItemGroup>
@@ -37,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Voicecoin.Core\Voicecoin.Core.csproj" />
+    <ProjectReference Include="..\..\voiceweb-auth\Voiceweb.Auth.RestApi\Voiceweb.Auth.RestApi.csproj" />
     <ProjectReference Include="..\Voicecoin.RestApi\Voicecoin.RestApi.csproj" />
   </ItemGroup>
 
@@ -45,6 +41,10 @@
     <Content Update="App_Data\Templates\UserActivation.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

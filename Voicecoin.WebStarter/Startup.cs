@@ -69,6 +69,7 @@ namespace Voicecoin.WebStarter
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseSwagger();
@@ -85,8 +86,10 @@ namespace Voicecoin.WebStarter
             app.UseAuthentication();
             app.UseMvc();
 
-            app.UseEntityDbContext(Configuration, env.ContentRootPath, new String[] { "Voicecoin.Core" });
-            app.UseInitLoader();
+            app.UseEntityDbContext(Configuration, env.ContentRootPath, new String[] { "Voiceweb.Auth.Core", "Voicecoin.Core" });
+
+            InitializationLoader loader = new InitializationLoader();
+            loader.Load();
         }
 
     }

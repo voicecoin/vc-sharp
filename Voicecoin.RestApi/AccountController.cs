@@ -19,6 +19,7 @@ namespace Voicecoin.RestApi
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
+        [Obsolete]
         public IActionResult CreateUser([FromBody] VmUserCreate account)
         {
             var existedUser = dc.Table<User>().Any(x => x.Email.ToLower() == account.Email.ToLower() ||
@@ -42,75 +43,6 @@ namespace Voicecoin.RestApi
 
             return Ok("Register successfully. Please active your account through email.");
         }
-
-        /// <summary>
-        /// Get a valid token after login
-        /// </summary>
-        /// <param name="username">User Email</param>
-        /// <param name="password">Password</param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpPost("token")]
-        [ProducesResponseType(typeof(String), 200)]
-        public IActionResult Token([FromBody] VmUserLogin userModel)
-        {
-            if (String.IsNullOrEmpty(userModel.UserName) || String.IsNullOrEmpty(userModel.Password))
-            {
-                return new BadRequestObjectResult("Username and password should not be empty.");
-            }
-
-            // validate from local
-            var user = (from usr in dc.Table<User>()
-                       join auth in dc.Table<UserAuth>() on usr.Id equals auth.UserId
-                       where usr.UserName == userModel.UserName
-                       select auth).FirstOrDefault();
-
-            if (user != null)
-            {
-                if (!user.IsActivated)
-                {
-                    return BadRequest("Account hasn't been activated, please check your email to activate it.");
-                }
-                else
-                {
-                    // validate password
-                    string hash = PasswordHelper.Hash(userModel.Password, user.Salt);
-                    if (user.Password == hash)
-                    {
-                        return Ok(JwtToken.GenerateToken(Database.Configuration, user.UserId));
-                    }
-                    else
-                    {
-                        return BadRequest("Authorization Failed.");
-                    }
-                }
-            }
-            else
-            {
-                return BadRequest("Account doesn't exist");
-            }
-        }
-
-        /*[HttpGet("list")]
-        public PageResult<UserListViewModel> GetUsers(string name, [FromQuery] int page = 1)
-        {
-            var query = dc.Table<User>().AsQueryable().Select(x => new UserListViewModel
-            {
-                Email = x.Email,
-                Name = x.Name
-            });
-
-            if (!String.IsNullOrEmpty(name))
-            {
-                query = query.Where(x => x.Name.Contains(name));
-            }
-
-            var total = query.Count();
-            int size = 20;
-            var items = query.Skip((page - 1) * size).Take(size).ToList();
-
-            return new PageResult<UserListViewModel> { Total = total, Page = page, Size = size, Items = items };
-        }*/
 
         /// <summary>
         /// Get current user profile

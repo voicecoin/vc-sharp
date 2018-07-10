@@ -30,5 +30,10 @@ namespace Voicecoin.Core.Airdrop
         /// </summary>
         [MaxLength(10)]
         public String ReferCode { get; set; }
+
+        public bool Activated { get; set; }
+
+        [StringLength(8)]
+        public String ActivationCode { get; set; }
     }
 }

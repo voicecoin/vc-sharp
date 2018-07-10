@@ -30,7 +30,11 @@ namespace Voicecoin.WebStarter
                 //.UseIISIntegration()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
+#if VOICECHAIN
+                .UseUrls("http://0.0.0.0:127")
+#else
                 .UseUrls("http://0.0.0.0:129")
+#endif
                 .Build();
     }
 }

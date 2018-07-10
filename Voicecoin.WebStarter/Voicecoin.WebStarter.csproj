@@ -3,21 +3,35 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
+    <AssemblyName>Voicechain.WebStarter</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile></DocumentationFile>
+    <DefineConstants>TRACE;DEBUG;VOICECHAIN</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;VOICECHAIN</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="App_Data\Logs\**" />
+    <Compile Remove="PublishOutput\**" />
     <Content Remove="App_Data\Logs\**" />
+    <Content Remove="PublishOutput\**" />
     <EmbeddedResource Remove="App_Data\Logs\**" />
+    <EmbeddedResource Remove="PublishOutput\**" />
     <None Remove="App_Data\Logs\**" />
+    <None Remove="PublishOutput\**" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="App_Data\ip2region.db" />
+    <None Remove="App_Data\Templates\activation.html" />
+    <None Remove="App_Data\Templates\join-candy-program-zh.html" />
+    <None Remove="App_Data\Templates\Subscription.html" />
+    <None Remove="App_Data\Voiceauth.db" />
     <None Remove="App_Data\Voicecoin.db" />
   </ItemGroup>
 

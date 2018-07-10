@@ -294,3 +294,4 @@ __pycache__/
 /Voicecoin.WebStarter/App_Data/ip2region.db
 /Voicecoin.WebStarter/wwwroot
 /Voicecoin.WebStarter/PublishOutput
+*.db

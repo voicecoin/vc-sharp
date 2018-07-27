@@ -16,6 +16,7 @@ namespace Voicecoin.RestApi
     [Authorize]
     [Produces("application/json")]
     [Route("v1/[controller]")]
+    [ServiceFilter(typeof(ApiExceptionFilter))]
     public class CoreController : ControllerBase
     {
         protected Database dc { get; set; }

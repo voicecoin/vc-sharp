@@ -19,7 +19,7 @@ namespace Voicecoin.RestApi.Airdrop
         /// <param name="data"></param>
         /// <returns>邀请码</returns>
         [HttpPost]
-        public async Task<IActionResult> Join(VmAirdrop data)
+        public async Task<ActionResult<String>> Join(VmAirdrop data)
         {
             if (!ModelState.IsValid)
             {

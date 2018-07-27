@@ -4,55 +4,58 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Voiceweb.Auth.Core.DbTables;
 
 namespace Voicecoin.Core.Account
 {
     public class UserPersonalCore
     {
         private Database dc;
+        private Database authDc;
         private string userId;
 
-        public UserPersonalCore(Database dc, string userId)
+        public UserPersonalCore(string userId)
         {
-            this.dc = dc;
+            dc = new DefaultDataContextLoader().GetDefaultDc();
+            authDc = new DefaultDataContextLoader().GetDefaultDc2<IAuthDbRecord>("VoicewebAuth");
             this.userId = userId;
         }
 
-        public User GetPersonalInfo()
+        public TbUser GetPersonalInfo()
         {
-            return dc.Table<User>().Include(x => x.Address).First(x => x.Id == userId);
+           return authDc.Table<TbUser>().Include(x => x.Address).FirstOrDefault(x => x.Id == userId);
         }
 
-        public void UpdatePersonalInfo(User model)
+        public void UpdatePersonalInfo(TbUser model)
         {
-            var user = dc.Table<User>().Find(userId);
-            var address = dc.Table<UserAddress>().FirstOrDefault(x => x.UserId == userId);
+            authDc.Transaction<IAuthDbRecord>(() => {
+                var user = authDc.Table<TbUser>().Find(userId);
+                var address = authDc.Table<TbUserAddress>().FirstOrDefault(x => x.UserId == userId);
 
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-            user.Nationality = model.Nationality;
-            user.Birthday = model.Birthday;
-            user.UpdatedTime = DateTime.UtcNow;
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.Nationality = model.Nationality;
+                user.Birthday = model.Birthday;
+                user.UpdatedTime = DateTime.UtcNow;
 
-            if (address == null)
-            {
-                user.Address = model.Address;
-                user.Address.UserId = user.Id;
-                user.Address.UpdatedTime = DateTime.UtcNow;
-            }
-            else
-            {
-                address.AddressLine1 = model.Address.AddressLine1;
-                address.AddressLine2 = model.Address.AddressLine2;
-                address.Country = model.Address.Country;
-                address.County = model.Address.County;
-                address.State = model.Address.State;
-                address.City = model.Address.City;
-                address.Zipcode = model.Address.Zipcode;
-                address.UpdatedTime = DateTime.UtcNow;
-            }
-
-            dc.SaveChanges();
+                if (address == null)
+                {
+                    user.Address = model.Address;
+                    user.Address.UserId = user.Id;
+                    user.Address.UpdatedTime = DateTime.UtcNow;
+                }
+                else
+                {
+                    address.AddressLine1 = model.Address.AddressLine1;
+                    address.AddressLine2 = model.Address.AddressLine2;
+                    address.Country = model.Address.Country;
+                    address.County = model.Address.County;
+                    address.State = model.Address.State;
+                    address.City = model.Address.City;
+                    address.Zipcode = model.Address.Zipcode;
+                    address.UpdatedTime = DateTime.UtcNow;
+                }
+            });
         }
     }
 }

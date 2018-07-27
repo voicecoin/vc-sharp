@@ -12,9 +12,8 @@ using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.PlatformAbstractions;
 using System.IO;
-using Voicecoin.Core;
 using DotNetToolkit.JwtHelper;
-using ContentFoundation.RestApi;
+using Voicecoin.RestApi;
 
 namespace Voicecoin.WebStarter
 {

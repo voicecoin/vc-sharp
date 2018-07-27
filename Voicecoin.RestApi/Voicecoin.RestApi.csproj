@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\voiceweb-auth\Voiceweb.Auth.Core\Voiceweb.Auth.Core.csproj" />
     <ProjectReference Include="..\Voicecoin.Core\Voicecoin.Core.csproj" />
   </ItemGroup>
 

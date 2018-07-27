@@ -295,3 +295,4 @@ __pycache__/
 /Voicecoin.WebStarter/wwwroot
 /Voicecoin.WebStarter/PublishOutput
 *.db
+/PublishOutput

@@ -16,6 +16,7 @@ using Voicecoin.Core;
 using Voicecoin.Core.Account;
 using Voicecoin.Core.General;
 using Voicecoin.Core.Models;
+using Voiceweb.Auth.Core.DbTables;
 
 namespace Voicecoin.RestApi
 {
@@ -62,7 +63,7 @@ namespace Voicecoin.RestApi
         [HttpGet("PersonalInformation")]
         public VmPersonalInfomation GetPersonalInformation()
         {
-            var personal = new UserPersonalCore(dc, CurrentUserId);
+            var personal = new UserPersonalCore(CurrentUserId);
             var user = personal.GetPersonalInfo();
 
             var pi = new VmPersonalInfomation
@@ -88,7 +89,6 @@ namespace Voicecoin.RestApi
             }
             else
             {
-
                 pi.Address = new VmUserAddress();
             }
 
@@ -98,13 +98,10 @@ namespace Voicecoin.RestApi
         [HttpPost("PersonalInformation")]
         public IActionResult UploadPersonalInformation([FromBody] VmPersonalInfomation vm)
         {
-            var personal = new UserPersonalCore(dc, CurrentUserId);
+            var personal = new UserPersonalCore(CurrentUserId);
 
-            dc.DbTran(() =>
-            {
-                var user = vm.ToObject<User>();
-                personal.UpdatePersonalInfo(user);
-            });
+            var user = vm.ToObject<TbUser>();
+            personal.UpdatePersonalInfo(user);
 
             return Ok();
         }
@@ -178,8 +175,8 @@ namespace Voicecoin.RestApi
                 DocumentTypeId = identification?.DocumentTypeId,
                 ExpiryDate = identification?.ExpiryDate,
                 IssueDate = identification?.IssueDate,
-                FrontSidePhoto = new { frontSidePhoto.Name, frontSidePhoto.Size },
-                BackSidePhoto = new { backSidePhoto.Name, backSidePhoto.Size }
+                FrontSidePhoto = new { frontSidePhoto?.Name, frontSidePhoto?.Size },
+                BackSidePhoto = new { backSidePhoto?.Name, backSidePhoto?.Size }
             };
         }
 

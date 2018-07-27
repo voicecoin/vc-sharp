@@ -1,5 +1,4 @@
 ﻿using Coinbase.Models;
-using ContentFoundation.RestApi;
 using EntityFrameworkCore.BootKit;
 using IP2Region;
 using Microsoft.AspNetCore.Authorization;
@@ -11,9 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Voicecoin.Core;
-using Voicecoin.Core.Coupons;
 using Voicecoin.Core.Ico;
-using Voicecoin.Core.Models;
 
 namespace Voicecoin.RestApi
 {

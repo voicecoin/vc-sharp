@@ -27,14 +27,9 @@ namespace Voicecoin.WebStarter
                         config.AddJsonFile(setting, optional: false, reloadOnChange: true);
                     });
                 })
-                //.UseIISIntegration()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
-#if VOICECHAIN
-                .UseUrls("http://0.0.0.0:127")
-#else
                 .UseUrls("http://0.0.0.0:129")
-#endif
                 .Build();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Coinbase;
 using Coinbase.Currecny;
 using Coinbase.Models;
-using ContentFoundation.RestApi;
 using EntityFrameworkCore.BootKit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

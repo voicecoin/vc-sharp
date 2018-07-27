@@ -9,7 +9,7 @@ using System.Linq;
 using EntityFrameworkCore.BootKit;
 using Voicecoin.RestApi;
 
-namespace ContentFoundation.RestApi
+namespace Voicecoin.RestApi
 {
     public class ConfigController : CoreController
     {

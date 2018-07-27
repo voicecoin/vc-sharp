@@ -161,13 +161,15 @@ namespace Voicecoin.RestApi
                                   join fs in dc.Table<FileStorage>() on us.FileStorageId equals fs.Id
                                   where us.UserId == CurrentUserId && us.Tag == "FrontSidePhotoId"
                                   orderby us.UpdatedTime descending
-                                  select new { Name = fs.OriginalFileName, fs.Size }).FirstOrDefault();
+                                  select new { Name = fs.OriginalFileName, fs.Size, fs.ConvertedFileName }).FirstOrDefault();
 
             var backSidePhoto = (from us in dc.Table<UserDocument>()
                                   join fs in dc.Table<FileStorage>() on us.FileStorageId equals fs.Id
                                   where us.UserId == CurrentUserId && us.Tag == "BackSidePhotoId"
                                   orderby us.UpdatedTime descending
-                                  select new { Name = fs.OriginalFileName, fs.Size }).FirstOrDefault();
+                                  select new { Name = fs.OriginalFileName, fs.Size, fs.ConvertedFileName }).FirstOrDefault();
+
+            var storage = new FileStorageCore(dc, CurrentUserId);
 
             return new
             {
@@ -175,8 +177,18 @@ namespace Voicecoin.RestApi
                 DocumentTypeId = identification?.DocumentTypeId,
                 ExpiryDate = identification?.ExpiryDate,
                 IssueDate = identification?.IssueDate,
-                FrontSidePhoto = new { frontSidePhoto?.Name, frontSidePhoto?.Size },
-                BackSidePhoto = new { backSidePhoto?.Name, backSidePhoto?.Size }
+                FrontSidePhoto = new
+                {
+                    frontSidePhoto?.Name,
+                    frontSidePhoto?.Size,
+                    Path = (frontSidePhoto?.ConvertedFileName == null) ? "" : storage.GetFilePath(frontSidePhoto.ConvertedFileName)
+                },
+                BackSidePhoto = new
+                {
+                    backSidePhoto?.Name,
+                    backSidePhoto?.Size,
+                    Path = (backSidePhoto?.ConvertedFileName == null) ? "" : storage.GetFilePath(backSidePhoto.ConvertedFileName)
+                }
             };
         }
 
@@ -242,7 +254,20 @@ namespace Voicecoin.RestApi
         [HttpGet("ResidenceVerification")]
         public IActionResult GetResidenceVerification()
         {
-            return Ok();
+            var file = (from us in dc.Table<UserDocument>()
+                                  join fs in dc.Table<FileStorage>() on us.FileStorageId equals fs.Id
+                                  where us.UserId == CurrentUserId && us.Tag == "ResidenceVerification"
+                                  orderby us.UpdatedTime descending
+                                  select new { Name = fs.OriginalFileName, fs.Size, fs.ConvertedFileName }).FirstOrDefault();
+
+            var storage = new FileStorageCore(dc, CurrentUserId);
+
+            return Ok(new
+            {
+                file?.Name,
+                file?.Size,
+                Path = (file?.ConvertedFileName == null) ? "" : storage.GetFilePath(file.ConvertedFileName)
+            });
         }
 
         [HttpPost("ResidenceVerification")]
@@ -272,7 +297,20 @@ namespace Voicecoin.RestApi
         [HttpGet("DocumentSignature")]
         public IActionResult GetDocumentSignature()
         {
-            return Ok();
+            var file = (from us in dc.Table<UserDocument>()
+                        join fs in dc.Table<FileStorage>() on us.FileStorageId equals fs.Id
+                        where us.UserId == CurrentUserId && us.Tag == "DocumentSignature"
+                        orderby us.UpdatedTime descending
+                        select new { Name = fs.OriginalFileName, fs.Size, fs.ConvertedFileName }).FirstOrDefault();
+
+            var storage = new FileStorageCore(dc, CurrentUserId);
+
+            return Ok(new
+            {
+                file?.Name,
+                file?.Size,
+                Path = (file?.ConvertedFileName == null) ? "" : storage.GetFilePath(file.ConvertedFileName)
+            });
         }
 
         /// <summary>

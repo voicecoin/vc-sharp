@@ -21,6 +21,14 @@ namespace Voicecoin.Core.General
             this.userId = userId;
         }
 
+        public string GetFilePath(string fileName, string dir = "Documents")
+        {
+            var s3file = new AwsS3Helper(Database.Configuration);
+            var presignedUrl = s3file.GeneratePreSignedURLFromS3(dir, fileName);
+
+            return presignedUrl;
+        }
+
         public async Task<string> Save(IFormFile file, string dir = "Documents")
         {
             if (file == null || file.Length == 0)
@@ -40,7 +48,8 @@ namespace Voicecoin.Core.General
             var s3file = new AwsS3Helper(Database.Configuration);
             s3file.SaveFileToS3(filePath, dir, fileName);
 
-            var presignedUrl = s3file.GeneratePreSignedURLFromS3(dir, fileName);
+            // Validate url
+            // var presignedUrl = s3file.GeneratePreSignedURLFromS3(dir, fileName);
 
             // read file to double check file is uploaded to S3
             if(!await s3file.ValidateFileSizeFromS3(dir, fileName, file.Length))

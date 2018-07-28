@@ -195,9 +195,7 @@ namespace Voicecoin.RestApi
         [HttpPost("IdentificationVerification")]
         public async Task<IActionResult> UploadIdentificationVerification(VmIdentificationVerification model)
         {
-            var userId = CurrentUserId;
-
-            var storage = new FileStorageCore(dc, userId);
+            var storage = new FileStorageCore(dc, CurrentUserId);
             var frontSidePhoto = await storage.Save(model.FrontSidePhoto);
             var backSidePhoto = await storage.Save(model.BackSidePhoto);
 
@@ -227,7 +225,7 @@ namespace Voicecoin.RestApi
                 {
                     var doc = new UserDocument
                     {
-                        UserId = userId,
+                        UserId = CurrentUserId,
                         Tag = "FrontSidePhotoId",
                         FileStorageId = frontSidePhoto
                     };
@@ -239,7 +237,7 @@ namespace Voicecoin.RestApi
                 {
                     var doc = new UserDocument
                     {
-                        UserId = userId,
+                        UserId = CurrentUserId,
                         Tag = "BackSidePhotoId",
                         FileStorageId = backSidePhoto
                     };
@@ -273,17 +271,17 @@ namespace Voicecoin.RestApi
         [HttpPost("ResidenceVerification")]
         public async Task<IActionResult> UploadResidenceVerification(IFormFile file)
         {
+            if (file == null) return Ok();
             if (file.Length == 0) return BadRequest("File size is zero.");
-            var userId = CurrentUserId;
 
-            dc.DbTran(async () =>
+            var storage = new FileStorageCore(dc, CurrentUserId);
+            var storageId = await storage.Save(file);
+
+            dc.DbTran(() =>
             {
-                var storage = new FileStorageCore(dc, userId);
-                var storageId = await storage.Save(file);
-
                 var doc = new UserDocument
                 {
-                    UserId = userId,
+                    UserId = CurrentUserId,
                     Tag = "ResidenceVerification",
                     FileStorageId = storageId
                 };
@@ -320,17 +318,16 @@ namespace Voicecoin.RestApi
         [HttpPost("DocumentSignature")]
         public async Task<IActionResult> UploadDocumentSignature(IFormFile file)
         {
+            if (file == null) return Ok();
             if (file.Length == 0) return BadRequest("File size is zero.");
-            var userId = CurrentUserId;
+            var storage = new FileStorageCore(dc, CurrentUserId);
+            var storageId = await storage.Save(file);
 
-            dc.DbTran(async () =>
+            dc.DbTran(() =>
             {
-                var storage = new FileStorageCore(dc, userId);
-                var storageId = await storage.Save(file);
-
                 var doc = new UserDocument
                 {
-                    UserId = userId,
+                    UserId = CurrentUserId,
                     Tag = "DocumentSignature",
                     FileStorageId = storageId
                 };

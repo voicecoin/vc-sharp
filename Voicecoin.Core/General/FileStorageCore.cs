@@ -46,7 +46,15 @@ namespace Voicecoin.Core.General
             var fileType = file.ContentType.Split('/').Last();
             var fileName = ShortId.Generate(true, false, 8) + "." + fileType;
             var s3file = new AwsS3Helper(Database.Configuration);
-            s3file.SaveFileToS3(filePath, dir, fileName);
+
+            try
+            {
+                s3file.SaveFileToS3(filePath, dir, fileName);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
             // Validate url
             // var presignedUrl = s3file.GeneratePreSignedURLFromS3(dir, fileName);
